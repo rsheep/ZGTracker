@@ -1,0 +1,11 @@
+## Interface: 11200
+## Title: |cff55CC55ZG|cffffffffTracker
+## Notes: Tracks Zul'Gurub coins and bijous
+## Author: mrmr
+## Version: 0.03
+## X-Website : http://github.com/rsheep/ZGTracker
+## Dependencies:
+## SavedVariablesPerCharacter: ZGTrackerSV
+
+ZGTrackerGUI.lua
+ZGTracker.lua
