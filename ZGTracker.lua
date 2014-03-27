@@ -19,7 +19,7 @@ ZGTrackerSV = {
 }
 
 local ZGT_VERSION = 0.02
-local ZGT_DEBUG = true
+local ZGT_DEBUG = false
 
 local ZGT_RESET_CHECK = true
 
