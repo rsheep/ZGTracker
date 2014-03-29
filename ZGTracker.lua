@@ -18,7 +18,7 @@ ZGTrackerSV = {
 	y_anchor = 50,
 }
 
-local ZGT_VERSION = 0.02
+local ZGT_VERSION = 0.04
 local ZGT_DEBUG = false
 
 local ZGT_RESET_CHECK = true
@@ -83,6 +83,8 @@ local function ZGT_ResetData()
 		prev_auto_roll = "no"
 	end
 
+	ZGT_GUI_Reset()
+
 	ZGTrackerSV = {}
 	ZGTrackerSV.bijou_total = 0
 	ZGTrackerSV.coin_total = 0
@@ -93,8 +95,6 @@ local function ZGT_ResetData()
 	ZGTrackerSV.details = prev_details
 	ZGTrackerSV.auto_roll = prev_auto_roll
 	ZGTrackerSV.lootTable = {}
-
-	ZGT_GUI_Reset_GUI()
 
 	ZGT_STATUS("Loot-Data Reset Successfull. [ " .. lcdate .. " - " .. ltime.. " ]")
 end
@@ -156,7 +156,7 @@ end
 local function ZGT_AddLoot(loottype, looter)
 	ZGTrackerSV.coin_total = ZGTrackerSV.coin_total or 0
 	ZGTrackerSV.bijou_total = ZGTrackerSV.bijou_total or 0
-	ZGTrackerSV.looters_count = ZGTrackerSV.looters_count or 0
+	ZGTrackerSV.looter_count = ZGTrackerSV.looter_count or 0
 
 	if ZGT_RESET_CHECK then
 		--ZGT_STATUS("'temp' data already present. Use '/zgt reset temp' to wipe it.")
@@ -169,13 +169,12 @@ local function ZGT_AddLoot(loottype, looter)
 				dialog.data = loottype
 				dialog.data2 = looter
 			end
-			ZGT_STATUS("Friendly Reminder! Use '/zgt reset' to wipe Loot-Dataset!")
+			ZGT_STATUS("Friendly Reminder! Use '/zgt reset' at raid start to wipe Loot-Dataset!")
 		end
 	end
 
 
 	if ZGTrackerSV and loottype and looter then
-		
 		if loottype == "coin" then
 			ZGTrackerSV.coin_total = ZGTrackerSV.coin_total + 1
 		elseif loottype == "bijou" then
@@ -189,16 +188,19 @@ local function ZGT_AddLoot(loottype, looter)
 		if ZGTrackerSV.lootTable[looter] then
 			ZGTrackerSV.lootTable[looter][loottype] = ZGTrackerSV.lootTable[looter][loottype] + 1
 		else
-			ZGTrackerSV.looters_count = ZGTrackerSV.looters_count + 1
+			ZGTrackerSV.looter_count = ZGTrackerSV.looter_count + 1
 			ZGTrackerSV.lootTable[looter] = {}
 			ZGTrackerSV.lootTable[looter]["coin"] = 0
 			ZGTrackerSV.lootTable[looter]["bijou"] = 0
-			ZGTrackerSV.lootTable[looter]["frame"] = ZGTrackerSV.looters_count
+			ZGTrackerSV.lootTable[looter]["frame"] = ZGTrackerSV.looter_count
 			ZGTrackerSV.lootTable[looter][loottype] = ZGTrackerSV.lootTable[looter][loottype] + 1
+			ZGT_GUI_Add(ZGTrackerSV.looter_count)
 		end
+		-- summary update
+		ZGT_GUI_Update()
+		-- looter update
+		ZGT_GUI_Update(looter)
 
-		ZGT_GUI_Update_InfoLine(nil, true)
-		ZGT_GUI_Update_InfoLine(looter, false)
 	end
 end
 
@@ -413,13 +415,13 @@ StaticPopupDialogs["ZGT_RESET_DATA_DIALOG"] = {
 	button2 = "No",
 	OnAccept = function(data, data2)
 		ZGT_ResetData()
-		ZGT_D("Data Reset successful.")
+		--ZGT_D("Data Reset successful.")
 		if data and data2 then
 			ZGT_AddLoot(data, data2)
 		end
 	end,
 	OnCancel = function()
-		ZGT_D("Data Reset was canceled.")
+		--ZGT_D("Data Reset was canceled.")
 	end,
 	timeout = 0,
 	whileDead = true,
@@ -452,22 +454,20 @@ coreframe:SetScript("OnEvent", function()
 		end
 
 	elseif event == "UPDATE_INSTANCE_INFO" then
+		local frame = getglobal("ZGT_GUI")
 		if ZGT_InstanceCheck() then
-			ZGT_D(" We're inside ZG! (event UPDATE_INSTANCE_INFO)")
-			local frame = getglobal("ZGT_GUI")
+			--ZGT_D(" We're inside ZG! (event UPDATE_INSTANCE_INFO)")
 			if not frame:IsVisible() then
 				frame:Show()
 			end
 		else
-			ZGT_D(" NOT inside an instance.")
-			local frame = getglobal("ZGT_GUI")
+			--ZGT_D(" NOT inside an instance.")
 			if frame:IsVisible() then
 				frame:Hide()
 			end
 		end
 
 	elseif event == "CHAT_MSG_SYSTEM" then
-		--ZGT_D(event .. " - " .. tostring(arg1))
 		local args = {}
 
 		for s in string.gfind(arg1, "[^%s]+") do
@@ -481,20 +481,15 @@ coreframe:SetScript("OnEvent", function()
 				frame:Show()
 			end
 			if ZGT_InstanceCheck() then
-				ZGT_D(" We're inside ZG! (Welcome message)")
+				--ZGT_D(" We're inside ZG! (Welcome message)")
 			end
 		end
 		
 		if arg1 == "You are now saved to this instance" then
 			if ZGT_InstanceCheck() then
-				ZGT_D(" You're now saved for Zul'Gurub.")
+				--ZGT_D(" You're now saved for Zul'Gurub.")
 			end
 		end
-
-	--elseif event == "PLAYER_ENTERING_WORLD" then
-		--ZGT_D(event)
-
-	
 
 	elseif event == "ADDON_LOADED" then
 		if (arg1 == "ZGTracker") then
@@ -507,6 +502,6 @@ coreframe:SetScript("OnEvent", function()
 
 	elseif event == "VARIABLES_LOADED" then
 		ZGT_GUI_Init()
-
+		
 	end
 end)

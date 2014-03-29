@@ -8,7 +8,7 @@ ZGT_UI = {
 	FONT_FILE = "Fonts\\ARIALN.TTF",
 }
 
-local ZGT_UI_DEBUG = true
+local ZGT_UI_DEBUG = false
 
 local function ZGT_D(text)
 	local header = "|cffCC5555[ZGT] "
@@ -292,11 +292,13 @@ local function GUI_ShowLooter(toggle)
 		for k, v in pairs(ZGTrackerSV.lootTable) do
 			if v["frame"] > 0 then
 				count = count + 1
-				
-				GUI_Frame.playerinfo[v["frame"]].fs_name:SetText(k)
-				GUI_Frame.playerinfo[v["frame"]].fs_bijou:SetText(v["bijou"])
-				GUI_Frame.playerinfo[v["frame"]].fs_coin:SetText(v["coin"])
-				GUI_Frame.playerinfo[v["frame"]]:Show()
+				local frame = GUI_Frame.playerinfo[v["frame"]]
+				if frame then
+					frame.fs_name:SetText(k)
+					frame.fs_bijou:SetText(v["bijou"])
+					frame.fs_coin:SetText(v["coin"])
+					frame:Show()
+				end
 			end
 		end
 		local height = (ZGT_UI.HEIGHT + 15) + count * 13
@@ -304,9 +306,6 @@ local function GUI_ShowLooter(toggle)
 	else
 		for k, v in pairs(ZGTrackerSV.lootTable) do
 			if v["frame"] > 0 then
-				--GUI_Frame.playerinfo[v["frame"]].fs_name:SetText(k)
-				--GUI_Frame.playerinfo[v["frame"]].fs_bijou:SetText(v["bijou"])
-				--GUI_Frame.playerinfo[v["frame"]].fs_coin:SetText(v["coin"])
 				GUI_Frame.playerinfo[v["frame"]]:Hide()
 			end
 		end
@@ -315,7 +314,7 @@ local function GUI_ShowLooter(toggle)
 	end
 end
 
-local function GUI_InfoLine(parent, anchorframe, name, offset, tCol)
+local function GUI_InfoLine_New(parent, anchorframe, name, offset, tCol)
 	name = name or ""
 
 	local hwidth = ZGT_UI.WIDTH - 2 * 3
@@ -384,6 +383,12 @@ local function GUI_InfoLine(parent, anchorframe, name, offset, tCol)
 	end)
 
 	return frame
+end
+
+local function GUI_InfoLine_Update(frame, name, bijou, coin)
+	frame.fs_name:SetText(name)
+	frame.fs_bijou:SetText(bijou)
+	frame.fs_coin:SetText(coin)
 end
 
 local function GUI_TableHeaders(parent)
@@ -677,48 +682,71 @@ end
 
 local function GetFrame_InfoLine(name)
 	-- search for name
-	for i = 1, 20 do
+	ZGT_D("   -- [GetFrame] LooterCount: " .. ZGTrackerSV.looter_count)
+	for i = 1, ZGTrackerSV.looter_count - 1 do
 		local frame = GUI_Frame.playerinfo[i]
 		local str = frame.fs_name:GetText()
 		if str == name then
+			ZGT_D("   -- [GetFrame] name found!")
 			return frame
 		end
 	end
 
-	--when the name isn't available, search the first "nil" frame
-	for i = 1, 20 do
-		local frame = GUI_Frame.playerinfo[i]
-		local str = frame.fs_name:GetText()
-		if str == "p" .. ZGTrackerSV.looters_count then
-			return frame
-		end
-	end
-
-	return false
+	return GUI_Frame.playerinfo[ZGTrackerSV.looter_count]
 end
 
-function ZGT_GUI_Update_InfoLine(name, summary)
-	if summary then
-		frame = GUI_Frame.summaryinfo
-		frame.fs_bijou:SetText(ZGTrackerSV.bijou_total)
-		frame.fs_coin:SetText(ZGTrackerSV.coin_total)
-		--frame:GetParent():SetHeight(frame:GetParent():GetHeight() + 13)
+function ZGT_GUI_Add(index)
+	if index == 0 then
+		tCol = {.31, .01, .01} -- RED
+		GUI_Frame.summaryinfo = GUI_InfoLine_New(GUI_Frame, GUI_Frame.tableheader, "Summary", 3, tCol)
 	else
-		local frame = GetFrame_InfoLine(name)
-		if frame.fs_name:GetText() == "p" .. ZGTrackerSV.looters_count then
-			frame.fs_name:SetText(name)
-			if ZGTrackerSV.details then
-				ZGT_D("Here :P")
-				frame:GetParent():SetHeight(frame:GetParent():GetHeight() + 13)
-				frame:Show()
+		if GUI_Frame.playerinfo[index] then
+			ZGT_D("  -- [ZGT_GUI_Add] frame " .. index .. " exist. Clearing values.")
+			GUI_Frame.playerinfo[index].fs_name:SetText("bogus" .. index)
+			GUI_Frame.playerinfo[index].fs_bijou:SetText("0")
+			GUI_Frame.playerinfo[index].fs_coin:SetText("0")
+		else
+			ZGT_D("  -- [ZGT_GUI_Add] frame " .. index .. " does NOT exist. Creating a new one.")
+			local anchor_frame = nil
+			if index == 1 then
+				anchor_frame = GUI_Frame.summaryinfo
+			else
+				anchor_frame = GUI_Frame.playerinfo[index - 1]
 			end
+
+			local tCol = {}
+			if (index - math.floor(index/2)*2) == 0 then
+				tCol = {.01, .31, .11} -- GREEN
+			else
+				tCol = {.01, .11, .31} -- BLUE
+			end
+
+			GUI_Frame.playerinfo[index] = GUI_InfoLine_New(GUI_Frame, anchor_frame, "bogus" .. index, 2, tCol)
 		end
-		frame.fs_bijou:SetText(ZGTrackerSV.lootTable[name]["bijou"])
-		frame.fs_coin:SetText(ZGTrackerSV.lootTable[name]["coin"])
+		if ZGTrackerSV.details then
+			GUI_Frame.playerinfo[index]:Show()
+			local height = (ZGT_UI.HEIGHT + 15) + ZGTrackerSV.looter_count * 13
+			GUI_Frame:SetHeight(height)
+		else
+			GUI_Frame.playerinfo[index]:Hide()
+		end
 	end
 end
 
-function ZGT_GUI_Reset_GUI()
+function ZGT_GUI_Update(name)
+	ZGT_D("   -- [ZGT_GUI_Update] LooterCount: " .. ZGTrackerSV.looter_count)
+	if name == nil then
+		ZGT_D("   -- [ZGT_GUI_Update] Summary")
+		local frame = GUI_Frame.summaryinfo
+		GUI_InfoLine_Update(frame, "Summary", ZGTrackerSV.bijou_total, ZGTrackerSV.coin_total)
+	else
+		ZGT_D("   -- [ZGT_GUI_Update] " .. name)
+		local frame = GetFrame_InfoLine(name)
+		GUI_InfoLine_Update(frame, name, ZGTrackerSV.lootTable[name]["bijou"], ZGTrackerSV.lootTable[name]["coin"])
+	end
+end
+
+function ZGT_GUI_Reset()
 	local frame = GUI_Frame.tableheader
 	frame.fs_date:SetText(string.format("%s - %s", ZGTrackerSV.reset_cdate, ZGTrackerSV.reset_time))
 
@@ -726,15 +754,22 @@ function ZGT_GUI_Reset_GUI()
 	frame.fs_bijou:SetText("0")
 	frame.fs_coin:SetText("0")
 
-	for i = 1, 20 do
+	ZGT_D("  -- Count: " .. ZGTrackerSV.looter_count)
+	for i = 1, ZGTrackerSV.looter_count do
 		local frame = GUI_Frame.playerinfo[i]
-		if frame:IsVisible() then
-			frame:Hide()
-			frame:GetParent():SetHeight(frame:GetParent():GetHeight() - 13)
+		if frame then
+			if frame:IsVisible() then
+				ZGT_D("  -- Hiding playerinfo[" .. i .. "]")
+				frame:Hide()
+				frame:GetParent():SetHeight(frame:GetParent():GetHeight() - 13)
+			end
+			frame.fs_name:SetText("bogus" .. i)
+			frame.fs_bijou:SetText("0")
+			frame.fs_coin:SetText("0")
+		else
+			ZGT_D("  -- reaced the end. i: " .. i)
+			break
 		end
-		frame.fs_name:SetText("p" .. i)
-		frame.fs_bijou:SetText("0")
-		frame.fs_coin:SetText("0")
 	end
 end
 
@@ -754,30 +789,19 @@ function ZGT_GUI_Init()
 
 	GUI_Frame.tableheader = GUI_TableHeaders(GUI_Frame)
 
-	tCol = {.31, .01, .01}
-	GUI_Frame.summaryinfo = GUI_InfoLine(GUI_Frame, GUI_Frame.tableheader, "Summary", 3, tCol)
-	ZGT_GUI_Update_InfoLine(nil, true)
-	GUI_Frame:SetHeight(GUI_Frame:GetHeight() + 15) -- should be 55 now!
+	-- summary line!
+	ZGT_GUI_Add(0)
+ 	GUI_Frame:SetHeight(GUI_Frame:GetHeight() + 15) -- should be 55 now!
+	ZGT_GUI_Update()
 
 	GUI_Frame.playerinfo = {}
 
-	-- first InfoLine, need special treatments :P
-	tCol = {.01, .11, .31}
-	GUI_Frame.playerinfo[1] = GUI_InfoLine(GUI_Frame, GUI_Frame.summaryinfo, "p1", 2, tCol)
-	GUI_Frame.playerinfo[1]:Hide()
-
-	-- InfoLines
-	for i = 2, 20 do
-		local tCol = {}
-		if (i - math.floor(i/2)*2) == 0 then
-			tCol = {.01, .31, .11}
-		else
-			tCol = {.01, .11, .31}
-		end
-
-		GUI_Frame.playerinfo[i] = GUI_InfoLine(GUI_Frame, GUI_Frame.playerinfo[i-1], "p" .. i, 2, tCol)
-		GUI_Frame.playerinfo[i]:Hide()
+	ZGT_D("Initial GUI filling...")
+	for i = 1, ZGTrackerSV.looter_count do
+		ZGT_GUI_Add(i)
+		ZGT_GUI_Update(looter)
 	end
+	ZGT_D("...done")
 
 	GUI_ShowLooter(ZGTrackerSV.details)
 
