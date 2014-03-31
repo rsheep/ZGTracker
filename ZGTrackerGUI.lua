@@ -30,8 +30,8 @@ local function GUI_About(parent)
 	frame:SetFrameStrata("MEDIUM")
 	frame:SetScale(ZGT_UI.SCALE)
 	frame:SetWidth(155)
-	frame:SetHeight(230)
-	frame:SetPoint("TOPRIGHT", parent, "TOPLEFT", -3, 0)
+	frame:SetHeight(249)
+	frame:SetPoint("TOPRIGHT", parent, "TOPLEFT", -1, 0)
 
 	frame:SetBackdrop( {
 		bgFile = ZGT_UI.BG_TEXTURE_FILE
@@ -42,13 +42,16 @@ local function GUI_About(parent)
 	fs_title:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, -3)
 	fs_title:SetFont(ZGT_UI.FONT_FILE, 10)
 	fs_title:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
-	fs_title:SetText(ZGT_TITLE)
+	fs_title:SetText(ZGT_TITLE .. " - About")
 
 	frame.fs_title = fs_title
 
+	--
+	-- Frame About
+	--
 	local frame_about = CreateFrame("Frame", nil, frame)
 	frame_about:SetWidth(145)
-	frame_about:SetHeight(38)
+	frame_about:SetHeight(42)
 	frame_about:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, -18)
 	frame_about:SetBackdrop( {
 		bgFile = ZGT_UI.BG_TEXTURE_FILE
@@ -56,15 +59,15 @@ local function GUI_About(parent)
 	frame_about:SetBackdropColor(.19, .19, .19, ZGT_UI.BGALPHA)
 
 	local fs_about = frame_about:CreateFontString(nil, "ARTWORK")
-	fs_about:SetPoint("TOPLEFT", frame_about, "TOPLEFT", 10, 4)
-	fs_about:SetFont(ZGT_UI.FONT_FILE, 9)
+	fs_about:SetPoint("TOPLEFT", frame_about, "TOPLEFT", 10, -1)
+	fs_about:SetFont(ZGT_UI.FONT_FILE, 10)
 	fs_about:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
 	fs_about:SetText("|cff7777DDAbout|cffffffff")
 
 	frame.fs_about = fs_about
 
 	local fs_author = frame_about:CreateFontString(nil, "ARTWORK")
-	fs_author:SetPoint("TOPLEFT", frame_about, "TOPLEFT", 3, -7)
+	fs_author:SetPoint("TOPLEFT", frame_about, "TOPLEFT", 3, -12)
 	fs_author:SetFont(ZGT_UI.FONT_FILE, 9)
 	fs_author:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
 	fs_author:SetText("|cffCC5555Author:|cffffffff " .. ZGT_AUTHOR)
@@ -72,7 +75,7 @@ local function GUI_About(parent)
 	frame.fs_author = fs_author
 
 	local fs_version = frame_about:CreateFontString(nil, "ARTWORK")
-	fs_version:SetPoint("TOPLEFT", frame_about, "TOPLEFT", 3, -17)
+	fs_version:SetPoint("TOPLEFT", frame_about, "TOPLEFT", 3, -22)
 	fs_version:SetFont(ZGT_UI.FONT_FILE, 9)
 	fs_version:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
 	fs_version:SetText("|cffCC5555Version:|cffffffff " .. ZGT_VERSION)
@@ -80,17 +83,20 @@ local function GUI_About(parent)
 	frame.fs_version = fs_version
 
 	local fs_website = frame_about:CreateFontString(nil, "ARTWORK")
-	fs_website:SetPoint("TOPLEFT", frame_about, "TOPLEFT", 3, -29)
+	fs_website:SetPoint("TOPLEFT", frame_about, "TOPLEFT", 3, -33)
 	fs_website:SetFont(ZGT_UI.FONT_FILE, 7)
 	fs_website:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
 	fs_website:SetText("|cff55CC55Website:|cffffffff " .. ZGT_WEBSITE)
 
 	frame.fs_website = fs_website
 
+	--
+	-- Frame Usage
+	--
 	local frame_usage = CreateFrame("Frame", nil, frame)
 	frame_usage:SetWidth(145)
-	frame_usage:SetHeight(103)
-	frame_usage:SetPoint("TOPLEFT", frame_about, "BOTTOMLEFT", 0, -5)
+	frame_usage:SetHeight(116)
+	frame_usage:SetPoint("TOPLEFT", frame_about, "BOTTOMLEFT", 0, -3)
 	frame_usage:SetBackdrop( {
 		bgFile = ZGT_UI.BG_TEXTURE_FILE
 	});
@@ -99,15 +105,15 @@ local function GUI_About(parent)
 	frame.frame_usage = frame_usage
 
 	local fs_usage = frame_usage:CreateFontString(nil, "ARTWORK")
-	fs_usage:SetPoint("TOPLEFT", frame_usage, "TOPLEFT", 10, 4)
-	fs_usage:SetFont(ZGT_UI.FONT_FILE, 9)
+	fs_usage:SetPoint("TOPLEFT", frame_usage, "TOPLEFT", 10, -1)
+	fs_usage:SetFont(ZGT_UI.FONT_FILE, 10)
 	fs_usage:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
 	fs_usage:SetText("|cff7777DDUsage|cffffffff")
 
 	frame.fs_usage = fs_usage
 
 	local t_about = CreateFrame("Button", nil, frame_usage)
-	t_about:SetPoint("TOPLEFT", frame_usage, "TOPLEFT", 5, -7)
+	t_about:SetPoint("TOPLEFT", frame_usage, "TOPLEFT", 5, -12)
 	t_about:SetWidth(11)
 	t_about:SetHeight(11)
 	t_about:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Normal")
@@ -123,8 +129,25 @@ local function GUI_About(parent)
 
 	frame.fs_usage_about = fs_usage_about
 
+	local t_option = CreateFrame("Button", nil, frame_usage)
+	t_option:SetPoint("TOPLEFT", frame_usage, "TOPLEFT", 5, -24)
+	t_option:SetWidth(11)
+	t_option:SetHeight(11)
+	t_option:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Option-Normal")
+	t_option:Disable()
+
+	frame.t_option = t_option
+
+	local fs_usage_option = frame_usage:CreateFontString(nil, "ARTWORK")
+	fs_usage_option:SetPoint("LEFT", t_option, "RIGHT", 3, 0)
+	fs_usage_option:SetFont(ZGT_UI.FONT_FILE, 7)
+	fs_usage_option:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
+	fs_usage_option:SetText("Display the options window.")
+
+	frame.fs_usage_option = fs_usage_option
+	
 	local t_close = CreateFrame("Button", nil, frame_usage)
-	t_close:SetPoint("TOPLEFT", frame_usage, "TOPLEFT", 5, -21)
+	t_close:SetPoint("TOPLEFT", frame_usage, "TOPLEFT", 5, -36)
 	t_close:SetWidth(11)
 	t_close:SetHeight(11)
 	t_close:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Normal")
@@ -142,7 +165,7 @@ local function GUI_About(parent)
 	frame.fs_usage_close = fs_usage_close
 
 	local t_detail = CreateFrame("Button", nil, frame_usage)
-	t_detail:SetPoint("TOPLEFT", frame_usage, "TOPLEFT", 5, -39)
+	t_detail:SetPoint("TOPLEFT", frame_usage, "TOPLEFT", 5, -52)
 	t_detail:SetWidth(11)
 	t_detail:SetHeight(11)
 	t_detail:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Details-Normal")
@@ -160,7 +183,7 @@ local function GUI_About(parent)
 	frame.fs_usage_detail = fs_usage_detail
 
 	local t_reset = CreateFrame("Button", nil, frame_usage)
-	t_reset:SetPoint("TOPLEFT", frame_usage, "TOPLEFT", 5, -53)
+	t_reset:SetPoint("TOPLEFT", frame_usage, "TOPLEFT", 5, -64)
 	t_reset:SetWidth(11)
 	t_reset:SetHeight(11)
 	t_reset:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Flash-Normal")
@@ -168,6 +191,9 @@ local function GUI_About(parent)
 
 	frame.t_reset = t_reset
 
+	--
+	-- Announce Usage
+	--
 	local fs_usage_reset = frame_usage:CreateFontString(nil, "ARTWORK")
 	fs_usage_reset:SetPoint("LEFT", t_reset, "RIGHT", 3, -3)
 	fs_usage_reset:SetJustifyH("LEFT")
@@ -178,7 +204,7 @@ local function GUI_About(parent)
 	frame.fs_usage_reset = fs_usage_reset
 
 	local fs_usage_announce = frame_usage:CreateFontString(nil, "ARTWORK")
-	fs_usage_announce:SetPoint("TOPLEFT", frame_usage, "TOPLEFT", 3, -73)
+	fs_usage_announce:SetPoint("TOPLEFT", frame_usage, "TOPLEFT", 3, -87)
 	fs_usage_announce:SetJustifyH("LEFT")
 	fs_usage_announce:SetFont(ZGT_UI.FONT_FILE, 7)
 	fs_usage_announce:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
@@ -189,10 +215,13 @@ local function GUI_About(parent)
 
 	frame.fs_usage_announce = fs_usage_announce
 
+	--
+	-- Frame Loot Automation
+	--
 	local frame_usage_loot = CreateFrame("Frame", nil, frame)
 	frame_usage_loot:SetWidth(145)
-	frame_usage_loot:SetHeight(57)
-	frame_usage_loot:SetPoint("TOPLEFT", frame_usage, "BOTTOMLEFT", 0, -5)
+	frame_usage_loot:SetHeight(62)
+	frame_usage_loot:SetPoint("TOPLEFT", frame_usage, "BOTTOMLEFT", 0, -3)
 	frame_usage_loot:SetBackdrop( {
 		bgFile = ZGT_UI.BG_TEXTURE_FILE
 	});
@@ -201,16 +230,16 @@ local function GUI_About(parent)
 	frame.frame_usage_loot = frame_usage_loot
 
 	local fs_usage_loot = frame_usage_loot:CreateFontString(nil, "ARTWORK")
-	fs_usage_loot:SetPoint("TOPLEFT", frame_usage_loot, "TOPLEFT", 10, 4)
+	fs_usage_loot:SetPoint("TOPLEFT", frame_usage_loot, "TOPLEFT", 10, -1)
 	fs_usage_loot:SetJustifyH("LEFT")
-	fs_usage_loot:SetFont(ZGT_UI.FONT_FILE, 9)
+	fs_usage_loot:SetFont(ZGT_UI.FONT_FILE, 10)
 	fs_usage_loot:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
 	fs_usage_loot:SetText("|cff7777DDRoll-Automation Setting|cffffffff")
 
 	frame.fs_usage_loot = fs_usage_loot
 
 	local t_loot_no = CreateFrame("Button", nil, frame_usage_loot)
-	t_loot_no:SetPoint("TOPLEFT", frame_usage_loot, "TOPLEFT", 5, -7)
+	t_loot_no:SetPoint("TOPLEFT", frame_usage_loot, "TOPLEFT", 5, -12)
 	t_loot_no:SetWidth(11)
 	t_loot_no:SetHeight(11)
 	t_loot_no:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-No-Normal")
@@ -228,7 +257,7 @@ local function GUI_About(parent)
 	frame.fs_usage_loot_no = fs_usage_loot_no
 
 	local t_loot_need = CreateFrame("Button", nil, frame_usage_loot)
-	t_loot_need:SetPoint("TOPLEFT", frame_usage_loot, "TOPLEFT", 5, -19)
+	t_loot_need:SetPoint("TOPLEFT", frame_usage_loot, "TOPLEFT", 5, -24)
 	t_loot_need:SetWidth(11)
 	t_loot_need:SetHeight(11)
 	t_loot_need:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Need-Normal")
@@ -246,7 +275,7 @@ local function GUI_About(parent)
 	frame.fs_usage_loot_need = fs_usage_loot_need
 
 	local t_loot_greed = CreateFrame("Button", nil, frame_usage_loot)
-	t_loot_greed:SetPoint("TOPLEFT", frame_usage_loot, "TOPLEFT", 5, -31)
+	t_loot_greed:SetPoint("TOPLEFT", frame_usage_loot, "TOPLEFT", 5, -36)
 	t_loot_greed:SetWidth(11)
 	t_loot_greed:SetHeight(11)
 	t_loot_greed:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Greed-Normal")
@@ -264,7 +293,7 @@ local function GUI_About(parent)
 	frame.fs_usage_loot_greed = fs_usage_loot_greed
 
 	local t_loot_pass = CreateFrame("Button", nil, frame_usage_loot)
-	t_loot_pass:SetPoint("TOPLEFT", frame_usage_loot, "TOPLEFT", 5, -43)
+	t_loot_pass:SetPoint("TOPLEFT", frame_usage_loot, "TOPLEFT", 5, -48)
 	t_loot_pass:SetWidth(11)
 	t_loot_pass:SetHeight(11)
 	t_loot_pass:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Pass-Normal")
@@ -281,6 +310,219 @@ local function GUI_About(parent)
 
 	frame.fs_usage_loot_pass = fs_usage_loot_pass
 
+	frame:Hide()
+
+	return frame
+end
+
+local function GUI_Option(parent)
+	local ZGT_TITLE = GetAddOnMetadata("ZGTracker", "Title")
+	
+	local frame = CreateFrame("Frame", "ZGT_GUI_Option", parent)
+	frame:SetClampedToScreen(true)
+	frame:SetFrameStrata("MEDIUM")
+	frame:SetScale(ZGT_UI.SCALE)
+	frame:SetWidth(ZGT_UI.WIDTH)
+	frame:SetHeight(90)
+
+	if getglobal("ZGT_GUI").moneyframe:IsVisible() then
+		frame:SetPoint("TOPLEFT", parent.moneyframe, "BOTTOMLEFT", 0, -1)
+	else
+		frame:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -1)
+	end
+
+	frame:SetBackdrop( {
+		bgFile = ZGT_UI.BG_TEXTURE_FILE
+	});
+	frame:SetBackdropColor(.01, .01, .01, ZGT_UI.BGALPHA)
+
+	local fs_title = frame:CreateFontString(nil, "ARTWORK")
+	fs_title:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, -3)
+	fs_title:SetFont(ZGT_UI.FONT_FILE, 10)
+	fs_title:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
+	fs_title:SetText(ZGT_TITLE .. " - Option")
+
+	frame.fs_title = fs_title
+
+	--
+	-- Display Options
+	--
+	local frame_display = CreateFrame("Frame", nil, frame)
+	frame_display:SetWidth(ZGT_UI.WIDTH - 5 * 2)
+	frame_display:SetHeight(26)
+	frame_display:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, -18)
+	frame_display:SetBackdrop( {
+		bgFile = ZGT_UI.BG_TEXTURE_FILE
+	});
+	frame_display:SetBackdropColor(.19, .19, .19, ZGT_UI.BGALPHA)
+
+	frame.frame_display = frame_display
+
+	local fs_display = frame_display:CreateFontString(nil, "ARTWORK")
+	fs_display:SetPoint("TOPLEFT", frame_display, "TOPLEFT", 10, -1)
+	fs_display:SetFont(ZGT_UI.FONT_FILE, 10)
+	fs_display:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
+	fs_display:SetText("|cff7777DDDisplay Options|r")
+
+	frame.fs_display = fs_display
+
+	local fs_display_money = frame_display:CreateFontString(nil, "ARTWORK")
+	fs_display_money:SetPoint("TOPLEFT", frame_display, "TOPLEFT", 3, -16)
+	fs_display_money:SetFont(ZGT_UI.FONT_FILE, 7)
+	fs_display_money:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
+	--fs_display_money:SetText("|cff55CC55Display Money Frame|r")
+	fs_display_money:SetText("Display Money Frame:")
+
+	frame.fs_display_money = fs_display_money
+
+	local btn_display_money = CreateFrame("Button", nil, frame_display)
+	btn_display_money:SetWidth(10)
+	btn_display_money:SetHeight(10)
+	btn_display_money:SetPoint("TOPLEFT", frame_display, "TOPRIGHT", -14, -14)
+	btn_display_money:RegisterForClicks("LeftButtonDown")
+
+	if ZGTrackerSV.display_money == true then
+		btn_display_money:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
+		btn_display_money:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
+		btn_display_money:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")
+	else
+		btn_display_money:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
+		btn_display_money:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
+		btn_display_money:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+	end
+
+	btn_display_money:SetScript("OnClick", function()
+		if arg1 == "LeftButton" then
+			local frame = getglobal("ZGT_GUI")
+			if ZGTrackerSV.display_money == true then
+				ZGTrackerSV.display_money = false
+				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
+				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+				frame.moneyframe:Hide()
+				frame.optionframe:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -1)
+			else
+				ZGTrackerSV.display_money = true
+				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
+				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")
+				frame.moneyframe:Show()
+				frame.optionframe:SetPoint("TOPLEFT", frame.moneyframe, "BOTTOMLEFT", 0, -1)
+			end
+		end
+	end)
+
+	frame.btn_display_money = btn_display_money
+
+	--
+	-- ChatSpem Options
+	--
+	local frame_spam = CreateFrame("Frame", nil, frame)
+	frame_spam:SetWidth(ZGT_UI.WIDTH - 5 * 2)
+	frame_spam:SetHeight(38)
+	frame_spam:SetPoint("TOPLEFT", frame_display, "BOTTOMLEFT", 0, -3)
+	frame_spam:SetBackdrop( {
+		bgFile = ZGT_UI.BG_TEXTURE_FILE
+	});
+	frame_spam:SetBackdropColor(.19, .19, .19, ZGT_UI.BGALPHA)
+
+	frame.frame_spam = frame_spam
+
+	local fs_spam = frame_spam:CreateFontString(nil, "ARTWORK")
+	fs_spam:SetPoint("TOPLEFT", frame_spam, "TOPLEFT", 10, -1)
+	fs_spam:SetFont(ZGT_UI.FONT_FILE, 10)
+	fs_spam:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
+	fs_spam:SetText("|cff7777DDChatSpam Options|r")
+
+	frame.fs_spam = fs_spam
+
+	local fs_spam_loot = frame_spam:CreateFontString(nil, "ARTWORK")
+	fs_spam_loot:SetPoint("TOPLEFT", frame_spam, "TOPLEFT", 3, -16)
+	fs_spam_loot:SetFont(ZGT_UI.FONT_FILE, 7)
+	fs_spam_loot:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
+	--fs_spam_loot:SetText("|cff55CC55Suppress Loot Spam:|r")
+	fs_spam_loot:SetText("Suppress Loot Spam:")
+
+	frame.fs_spam_loot = fs_spam_loot
+
+	local btn_spam_loot = CreateFrame("Button", nil, frame_spam)
+	btn_spam_loot:SetWidth(10)
+	btn_spam_loot:SetHeight(10)
+	btn_spam_loot:SetPoint("TOPLEFT", frame_spam, "TOPRIGHT", -14, -14)
+	btn_spam_loot:RegisterForClicks("LeftButtonDown")
+
+	if ZGTrackerSV.spam_loot == true then
+		btn_spam_loot:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
+		btn_spam_loot:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
+		btn_spam_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")
+	else
+		btn_spam_loot:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
+		btn_spam_loot:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
+		btn_spam_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+	end
+
+	btn_spam_loot:SetScript("OnClick", function()
+		if arg1 == "LeftButton" then
+			if ZGTrackerSV.spam_loot == true then
+				ZGTrackerSV.spam_loot = false
+				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
+				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+			else
+				ZGTrackerSV.spam_loot = true
+				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
+				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")				
+			end
+		end
+	end)
+
+	frame.btn_spam_loot = btn_spam_loot
+
+
+	local fs_spam_money = frame_spam:CreateFontString(nil, "ARTWORK")
+	fs_spam_money:SetPoint("TOPLEFT", frame_spam, "TOPLEFT", 3, -28)
+	fs_spam_money:SetFont(ZGT_UI.FONT_FILE, 7)
+	fs_spam_money:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
+	--fs_spam_money:SetText("|cff55CC55Suppress Money Spam:|r")
+	fs_spam_money:SetText("Suppress Money Spam:")
+
+	frame.fs_spam_money = fs_spam_money
+
+	local btn_spam_money = CreateFrame("Button", nil, frame_spam)
+	btn_spam_money:SetWidth(10)
+	btn_spam_money:SetHeight(10)
+	btn_spam_money:SetPoint("TOPLEFT", frame_spam, "TOPRIGHT", -14, -26)
+	btn_spam_money:RegisterForClicks("LeftButtonDown")
+
+	if ZGTrackerSV.spam_money == true then
+		btn_spam_money:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
+		btn_spam_money:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
+		btn_spam_money:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")
+	else
+		btn_spam_money:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
+		btn_spam_money:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
+		btn_spam_money:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+	end
+
+	btn_spam_money:SetScript("OnClick", function()
+		if arg1 == "LeftButton" then
+			if ZGTrackerSV.spam_money == true then
+				ZGTrackerSV.spam_money = false
+				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
+				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+			else
+				ZGTrackerSV.spam_money = true
+				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
+				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")				
+			end
+		end
+	end)
+
+	frame.btn_spam_money = btn_spam_money
+	
 	frame:Hide()
 
 	return frame
@@ -428,6 +670,39 @@ local function GUI_TableHeaders(parent)
 	return frame
 end
 
+local function GUI_Money(parent)
+	local frame = CreateFrame("Frame", nil)
+	
+	frame:SetClampedToScreen(true)
+	frame:SetFrameStrata("MEDIUM")
+	frame:SetScale(ZGT_UI.SCALE)
+	frame:SetWidth(ZGT_UI.WIDTH)
+	frame:SetHeight(12)
+	frame:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -1)
+
+	frame:SetBackdrop( {
+		bgFile = ZGT_UI.BG_TEXTURE_FILE
+	});
+	frame:SetBackdropColor(.01, .01, .01, ZGT_UI.BGALPHA)
+
+	local smallmoneyframe = CreateFrame("Frame", "ZGT_GUI_SmallMoneyFrame", frame, "SmallMoneyFrameTemplate")
+	smallmoneyframe:SetScale(ZGT_UI.SCALE/1.75)
+	smallmoneyframe:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 9, -3)
+	smallmoneyframe:SetScript("OnLoad", nil)
+	smallmoneyframe:SetScript("OnEvent", nil)
+	smallmoneyframe:SetScript("OnShow", nil)
+
+	frame.smallmoneyframe = smallmoneyframe
+
+	if ZGTrackerSV.display_money then
+		frame:Show()
+	else
+		frame:Hide()
+	end
+
+	return frame
+end
+
 local function GUI_Header()
 	local frame = CreateFrame("Frame", "ZGT_GUI")
 	frame:EnableMouse(true)
@@ -453,25 +728,26 @@ local function GUI_Header()
 
 	local ZGT_TITLE = GetAddOnMetadata("ZGTracker", "Title")
 	local fs_title = frame:CreateFontString(nil, "ARTWORK")
-	fs_title:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, -3)
+	fs_title:SetPoint("TOPLEFT", frame, "TOPLEFT", 26, -3)
 	fs_title:SetFont(ZGT_UI.FONT_FILE, 10)
 	fs_title:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
 	fs_title:SetText(ZGT_TITLE)
 
 	frame.fs_title = fs_title
 
+	--
+	-- Buttons
+	--
 	local btn_about = CreateFrame("Button", nil, frame)
-	btn_about:SetWidth(11)
-	btn_about:SetHeight(11)
-	btn_about:SetPoint("TOPLEFT", frame, "TOPLEFT", 50, -3)
+	btn_about:SetWidth(14)
+	btn_about:SetHeight(14)
+	btn_about:SetPoint("CENTER", frame, "TOPLEFT", 3, -9)
 	btn_about:RegisterForClicks("LeftButtonDown")
 	btn_about:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Normal")
 	btn_about:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Pushed")
 	btn_about:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
 	
-	--
-	-- Buttons
-	--
+	
 	btn_about:SetScript("OnClick", function()
 		if arg1 == "LeftButton" then
 			local state = this:GetButtonState()
@@ -488,11 +764,11 @@ local function GUI_Header()
 
 	frame.btn_about = btn_about
 
-	--[[
+	
 	local btn_option = CreateFrame("Button", nil, frame)
-	btn_option:SetWidth(11)
-	btn_option:SetHeight(11)
-	btn_option:SetPoint("TOPLEFT", frame, "TOPLEFT", 62, -3)
+	btn_option:SetWidth(14)
+	btn_option:SetHeight(14)
+	btn_option:SetPoint("CENTER", frame, "TOPLEFT", 17, -9)
 	btn_option:RegisterForClicks("LeftButtonDown")
 	btn_option:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Option-Normal")
 	btn_option:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Option-Pushed")
@@ -500,31 +776,41 @@ local function GUI_Header()
 	btn_option:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
 	
 	btn_option:SetScript("OnClick", function()
-
+		if arg1 == "LeftButton" then
+			local state = this:GetButtonState()
+			local frame = getglobal("ZGT_GUI_Option")
+			if state == "NORMAL" then
+				this:SetButtonState("PUSHED", 1)
+				frame:Show()
+			else
+				this:SetButtonState("NORMAL")
+				frame:Hide()
+			end
+		end
 	end)
 
 	frame.btn_option = btn_option
-	]]
+	
 
 	local btn_loot = CreateFrame("Button", nil, frame)
-	btn_loot:SetWidth(11)
-	btn_loot:SetHeight(11)
-	btn_loot:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -44, -3)
+	btn_loot:SetWidth(14)
+	btn_loot:SetHeight(14)
+	btn_loot:SetPoint("CENTER", frame, "TOPRIGHT", -51, -9)
 	btn_loot:RegisterForClicks("LeftButtonDown")
 
 	if ZGTrackerSV.auto_roll == "no" then
 		btn_loot:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-No-Normal")
 		btn_loot:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-No-Pushed")
 		btn_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
-	elseif ZGTrackerSV.auto_roll == "NEED" then
+	elseif ZGTrackerSV.auto_roll == "Need" then
 		btn_loot:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Need-Normal")
 		btn_loot:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Need-Pushed")
 		btn_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
-	elseif ZGTrackerSV.auto_roll == "GREED" then
+	elseif ZGTrackerSV.auto_roll == "Greed" then
 		btn_loot:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Greed-Normal")
 		btn_loot:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Green-Pushed")
 		btn_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
-	elseif ZGTrackerSV.auto_roll == "PASS" then
+	elseif ZGTrackerSV.auto_roll == "Pass" then
 		btn_loot:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Pass-Normal")
 		btn_loot:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Pass-Pushed")
 		btn_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
@@ -533,21 +819,21 @@ local function GUI_Header()
 	btn_loot:SetScript("OnClick", function()
 		if arg1 == "LeftButton" then
 			if ZGTrackerSV.auto_roll == "no" then
-				ZGTrackerSV.auto_roll = "NEED"
+				ZGTrackerSV.auto_roll = "Need"
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Need-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Need-Pushed")
 				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
-			elseif ZGTrackerSV.auto_roll == "NEED" then
-				ZGTrackerSV.auto_roll = "GREED"
+			elseif ZGTrackerSV.auto_roll == "Need" then
+				ZGTrackerSV.auto_roll = "Greed"
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Greed-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Green-Pushed")
 				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
-			elseif ZGTrackerSV.auto_roll == "GREED" then
-				ZGTrackerSV.auto_roll = "PASS"
+			elseif ZGTrackerSV.auto_roll == "Greed" then
+				ZGTrackerSV.auto_roll = "Pass"
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Pass-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Pass-Pushed")
 				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
-			elseif ZGTrackerSV.auto_roll == "PASS" then
+			elseif ZGTrackerSV.auto_roll == "Pass" then
 				ZGTrackerSV.auto_roll = "no"
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-No-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-No-Pushed")
@@ -560,9 +846,9 @@ local function GUI_Header()
 
 
 	local btn_flash = CreateFrame("Button", nil, frame)
-	btn_flash:SetWidth(11)
-	btn_flash:SetHeight(11)
-	btn_flash:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -27, -3)
+	btn_flash:SetWidth(14)
+	btn_flash:SetHeight(14)
+	btn_flash:SetPoint("CENTER", frame, "TOPRIGHT", -37, -9)
 	btn_flash:RegisterForClicks("LeftButtonDown")
 	btn_flash:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Flash-Normal")
 	btn_flash:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Flash-Pushed")
@@ -580,13 +866,13 @@ local function GUI_Header()
 	frame.btn_flash = btn_flash
 
 	local btn_detail = CreateFrame("Button", nil, frame)
-	btn_detail:SetWidth(11)
-	btn_detail:SetHeight(11)
-	btn_detail:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -15, -3)
+	btn_detail:SetWidth(14)
+	btn_detail:SetHeight(14)
+	btn_detail:SetPoint("CENTER", frame, "TOPRIGHT", -23, -9)
 	btn_detail:RegisterForClicks("LeftButtonDown")
 	btn_detail:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Details-Normal")
 	btn_detail:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Details-Pushed")
-	btn_detail:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")
+	btn_detail:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
 	if ZGTrackerSV.details then
 		btn_detail:SetButtonState("PUSHED", 1)
 	else
@@ -610,9 +896,9 @@ local function GUI_Header()
 	frame.btn_detail = btn_detail
 
 	local btn_close = CreateFrame("Button", nil, frame)
-	btn_close:SetWidth(11)
-	btn_close:SetHeight(11)
-	btn_close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -3, -3)
+	btn_close:SetWidth(14)
+	btn_close:SetHeight(14)
+	btn_close:SetPoint("CENTER", frame, "TOPRIGHT", -9, -9)
 	btn_close:RegisterForClicks("LeftButtonDown")
 	btn_close:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Normal")
 	btn_close:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Pushed")
@@ -754,12 +1040,13 @@ function ZGT_GUI_Reset()
 	frame.fs_bijou:SetText("0")
 	frame.fs_coin:SetText("0")
 
-	ZGT_D("  -- Count: " .. ZGTrackerSV.looter_count)
+	MoneyFrame_Update(getglobal("ZGT_GUI_SmallMoneyFrame"):GetName(), ZGTrackerSV.copper_total)
+
 	for i = 1, ZGTrackerSV.looter_count do
 		local frame = GUI_Frame.playerinfo[i]
 		if frame then
 			if frame:IsVisible() then
-				ZGT_D("  -- Hiding playerinfo[" .. i .. "]")
+				--ZGT_D("  -- Hiding playerinfo[" .. i .. "]")
 				frame:Hide()
 				frame:GetParent():SetHeight(frame:GetParent():GetHeight() - 13)
 			end
@@ -767,7 +1054,7 @@ function ZGT_GUI_Reset()
 			frame.fs_bijou:SetText("0")
 			frame.fs_coin:SetText("0")
 		else
-			ZGT_D("  -- reaced the end. i: " .. i)
+			--ZGT_D("  -- reaced the end. i: " .. i)
 			break
 		end
 	end
@@ -785,7 +1072,8 @@ function ZGT_GUI_Init()
 
 	GUI_Frame =	GUI_Header()
 
-	GUI_Frame.aboutframe = GUI_About(GUI_Frame)
+	GUI_Frame.moneyframe = GUI_Money(GUI_Frame)
+	MoneyFrame_Update(GUI_Frame.moneyframe.smallmoneyframe:GetName(), ZGTrackerSV.copper_total)
 
 	GUI_Frame.tableheader = GUI_TableHeaders(GUI_Frame)
 
@@ -804,6 +1092,10 @@ function ZGT_GUI_Init()
 	ZGT_D("...done")
 
 	GUI_ShowLooter(ZGTrackerSV.details)
+
+	GUI_Frame.aboutframe = GUI_About(GUI_Frame)
+
+	GUI_Frame.optionframe = GUI_Option(GUI_Frame)	
 
 	return true
 end
