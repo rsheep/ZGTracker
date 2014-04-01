@@ -23,7 +23,7 @@ ZGTrackerSV = {
 	spam_money = false,
 }
 
-local ZGT_VERSION = 0.07
+local ZGT_VERSION = 0.071
 local ZGT_DEBUG = false
 
 local ZGT_RESET_CHECK = true
