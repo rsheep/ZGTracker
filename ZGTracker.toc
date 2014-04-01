@@ -2,7 +2,7 @@
 ## Title: |cff55CC55ZG|cffffffffTracker
 ## Notes: Tracks Zul'Gurub coins and bijous
 ## Author: mrmr
-## Version: 0.05
+## Version: 0.06
 ## X-Website : http://github.com/rsheep/ZGTracker
 ## Dependencies:
 ## SavedVariablesPerCharacter: ZGTrackerSV

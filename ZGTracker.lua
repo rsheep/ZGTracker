@@ -12,8 +12,7 @@ ZGTrackerSV = {
 	reset_time = "N/A",
 	reset_date = "N/A",
 	reset_cdate = "N/A",
-	details = true,
-	--detauls_content = "raid/self"
+	details = "raid", -- summary/self/raid
 	auto_roll = "no",
 	x_anchor = 200,
 	y_anchor = 50,
@@ -23,7 +22,7 @@ ZGTrackerSV = {
 	spam_money = false,
 }
 
-local ZGT_VERSION = 0.05
+local ZGT_VERSION = 0.06
 local ZGT_DEBUG = false
 
 local ZGT_RESET_CHECK = true
@@ -113,9 +112,20 @@ local function ZGT_InstanceCheck()
 	return zg
 end
 
+local function ZGT_GetClass(looter)
+	local num = GetNumRaidMembers()
+
+	for i = 1, num do
+		local membername = UnitName("raid" .. i)
+		if membername == looter then
+			local _, class = UnitClass("raid" ..i)
+			return class
+		end
+	end
+end
+
 local function ZGT_PrintChat_Help()
 	ZGT_STATUS("Keep track of looted Bijous/Coins inside Zul'Gurub.")
-	ZGT_STATUS("The addon works only while in a raid group and inside Zul'Gurub", "                 ")
 	ZGT_STATUS("/zgtracker /zgt {toggle | reset | loot | help | about}", "Usage: ")
 	ZGT_STATUS("Toggle ZGTracker GUI on/off", " - toggle: ")
 	ZGT_STATUS("Reset Bijous/Coing counters", " - reset: ")
@@ -130,8 +140,9 @@ local function ZGT_PrintChat_About()
 	local ZGT_VERSION = GetAddOnMetadata("ZGTracker", "Version")
 	local ZGT_AUTHOR = GetAddOnMetadata("ZGTracker", "Author")
 	local ZGT_WEBSITE = GetAddOnMetadata("ZGTracker", "X-Website")
-	ZGT_STATUS("Keep track of looted Bijous/Coins inside Zul'Gurub.", ZGT_TITLE .. " - " .. ZGT_VERSION .. " - ")
+	ZGT_STATUS("Keep track of looted Bijous/Coins inside Zul'Gurub.", ZGT_TITLE .. " - ")
 	ZGT_STATUS(ZGT_AUTHOR, " - Author: ")
+	ZGT_STATUS(ZGT_VERSION, " - Version: ")
 	ZGT_STATUS("[" .. ZGT_WEBSITE .. "]", " - Website: ")
 end
 
@@ -139,6 +150,7 @@ local function ZGT_ResetData()
 	local ldate = date("%A %d %B %Y")
 	local lcdate = date("%d/%m/%y")
 	local ltime = date("%H:%M")
+	--[[
 	local prev_details = nil
 	local prev_auto_roll = nil
 	local prev_display_money = nil
@@ -177,6 +189,15 @@ local function ZGT_ResetData()
 	end
 
 	ZGTrackerSV = {}
+
+	ZGTrackerSV.details = prev_details
+	ZGTrackerSV.auto_roll = prev_auto_roll
+	ZGTrackerSV.display_money = prev_display_money
+	ZGTrackerSV.spam_loot = prev_spam_loot
+	ZGTrackerSV.spam_money = prev_spam_money
+	]]
+
+
 	ZGTrackerSV.copper_total = 0
 	ZGTrackerSV.bijou_total = 0
 	ZGTrackerSV.coin_total = 0
@@ -184,13 +205,19 @@ local function ZGT_ResetData()
 	ZGTrackerSV.reset_time = ltime
 	ZGTrackerSV.reset_date = ldate
 	ZGTrackerSV.reset_cdate = lcdate
-	ZGTrackerSV.details = prev_details
-	ZGTrackerSV.auto_roll = prev_auto_roll
-	ZGTrackerSV.display_money = prev_display_money
-	ZGTrackerSV.spam_loot = prev_spam_loot
-	ZGTrackerSV.spam_money = prev_spam_money
+	
 
 	ZGTrackerSV.lootTable = {}
+
+	ZGTrackerSV.looter_count = ZGTrackerSV.looter_count + 1
+	
+	local looter = UnitName('player')
+	local _, class = UnitClass('player')
+	ZGTrackerSV.lootTable[looter] = {}
+	ZGTrackerSV.lootTable[looter]["coin"] = 0
+	ZGTrackerSV.lootTable[looter]["bijou"] = 0
+	ZGTrackerSV.lootTable[looter]["frame"] = ZGTrackerSV.looter_count
+	ZGTrackerSV.lootTable[looter]["class"] = class
 
 	ZGT_GUI_Reset()
 
@@ -228,7 +255,7 @@ local function ZGT_ScanLootMSG(msg)
 		table.insert(w, s)
 	end
 
-	local loottype, looter = nil, nil
+	local loottype, looter, class = nil, nil, nil
 	if w[2] == "won:" or w[2] == "receive" or w[2] == "receives" then
 		if (string.find(msg,"Coin")) then
 			loottype = "coin"
@@ -248,10 +275,12 @@ local function ZGT_ScanLootMSG(msg)
 		end
 	end
 
-	return loottype, looter
+	class = ZGT_GetClass(looter)
+
+	return loottype, looter, class
 end
 
-local function ZGT_AddLoot(loottype, looter)
+local function ZGT_AddLoot(loottype, looter, class)
 	ZGTrackerSV.coin_total = ZGTrackerSV.coin_total or 0
 	ZGTrackerSV.bijou_total = ZGTrackerSV.bijou_total or 0
 	ZGTrackerSV.looter_count = ZGTrackerSV.looter_count or 0
@@ -266,6 +295,7 @@ local function ZGT_AddLoot(loottype, looter)
 			if dialog then
 				dialog.data = loottype
 				dialog.data2 = looter
+				dialog.data3 = class
 			end
 			ZGT_STATUS("Friendly Reminder! Use '/zgt reset' at raid start to wipe Loot-Dataset!")
 		end
@@ -291,8 +321,10 @@ local function ZGT_AddLoot(loottype, looter)
 			ZGTrackerSV.lootTable[looter]["coin"] = 0
 			ZGTrackerSV.lootTable[looter]["bijou"] = 0
 			ZGTrackerSV.lootTable[looter]["frame"] = ZGTrackerSV.looter_count
+			ZGTrackerSV.lootTable[looter]["class"] = class
 			ZGTrackerSV.lootTable[looter][loottype] = ZGTrackerSV.lootTable[looter][loottype] + 1
-			ZGT_GUI_Add(ZGTrackerSV.looter_count)
+			ZGT_D("Adding Looter: " .. looter .. " - Class: " .. class)
+			ZGT_GUI_Add(ZGTrackerSV.looter_count, looter, class)
 		end
 		-- summary update
 		ZGT_GUI_Update()
@@ -463,9 +495,9 @@ local function ZGT_Event_CHAT_MSG_LOOT(msg, id)
 	--id 	- arg11	Chat lineID 
 
 	if ZGT_InstanceCheck() then
-		local loottype, looter = ZGT_ScanLootMSG(msg)
+		local loottype, looter, class = ZGT_ScanLootMSG(msg)
 		if looter then
-			ZGT_AddLoot(loottype, looter)
+			ZGT_AddLoot(loottype, looter, class)
 		end
 	end
 end

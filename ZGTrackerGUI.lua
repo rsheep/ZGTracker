@@ -11,13 +11,14 @@ ZGT_UI = {
 local ZGT_UI_DEBUG = false
 
 local function ZGT_D(text)
-	local header = "|cffCC5555[ZGT] "
+	local header = "|cffCC5555[ZGT GUI] "
 	if ZGT_UI_DEBUG then
 		DEFAULT_CHAT_FRAME:AddMessage(header .. "|cffffffff" .. text)
 	end
 end
 
 local GUI_Frame = nil
+
 
 local function GUI_About(parent)
 	local ZGT_TITLE = GetAddOnMetadata("ZGTracker", "Title")
@@ -178,7 +179,7 @@ local function GUI_About(parent)
 	fs_usage_detail:SetJustifyH("LEFT")
 	fs_usage_detail:SetFont(ZGT_UI.FONT_FILE, 7)
 	fs_usage_detail:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
-	fs_usage_detail:SetText("Show/Hide player's details.")
+	fs_usage_detail:SetText("Cycle through Details-Views.")
 
 	frame.fs_usage_detail = fs_usage_detail
 
@@ -529,16 +530,31 @@ local function GUI_Option(parent)
 end
 
 local function GUI_ShowLooter(toggle)
-	if toggle then
+	if toggle == "self" then
+		for k, v in pairs(ZGTrackerSV.lootTable) do
+			if k == UnitName('player') and v["frame"] == 1 then
+				local frame = GUI_Frame.playerinfo[v["frame"]]
+				if frame then
+					--frame.fs_name:SetText(k)
+					--frame.fs_bijou:SetText(v["bijou"])
+					--frame.fs_coin:SetText(v["coin"])
+					frame:Show()
+				end
+			end
+		end
+		local height = (ZGT_UI.HEIGHT + 15) + 13
+		GUI_Frame:SetHeight(height)
+
+	elseif toggle == "raid" then
 		local count = 0
 		for k, v in pairs(ZGTrackerSV.lootTable) do
 			if v["frame"] > 0 then
 				count = count + 1
 				local frame = GUI_Frame.playerinfo[v["frame"]]
 				if frame then
-					frame.fs_name:SetText(k)
-					frame.fs_bijou:SetText(v["bijou"])
-					frame.fs_coin:SetText(v["coin"])
+					--frame.fs_name:SetText(k)
+					--frame.fs_bijou:SetText(v["bijou"])
+					--frame.fs_coin:SetText(v["coin"])
 					frame:Show()
 				end
 			end
@@ -579,7 +595,7 @@ local function GUI_InfoLine_New(parent, anchorframe, name, offset, tCol)
 	fs_name:SetPoint("LEFT", frame, "LEFT", 3, 0)
 	fs_name:SetJustifyH("LEFT")
 	fs_name:SetFont(ZGT_UI.FONT_FILE, 9)
-	fs_name:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
+	fs_name:SetTextColor(.91, .91, .91, ZGT_UI.BGALPHA)
 	fs_name:SetText(name)
 
 	frame.fs_name = fs_name
@@ -873,22 +889,17 @@ local function GUI_Header()
 	btn_detail:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Details-Normal")
 	btn_detail:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Details-Pushed")
 	btn_detail:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
-	if ZGTrackerSV.details then
-		btn_detail:SetButtonState("PUSHED", 1)
-	else
-		btn_detail:SetButtonState("NORMAL")
-	end
-
+	
 	btn_detail:SetScript("OnClick", function()
 		if arg1 == "LeftButton" then
-			local state = this:GetButtonState()
-			if state == "NORMAL" then
-				this:SetButtonState("PUSHED", 1)
-				ZGTrackerSV.details = true
-			else
-				this:SetButtonState("NORMAL")
-				ZGTrackerSV.details = false
+			if ZGTrackerSV.details == "summary" then
+				ZGTrackerSV.details = "self"
+			elseif ZGTrackerSV.details == "self" then
+				ZGTrackerSV.details = "raid"
+			elseif ZGTrackerSV.details == "raid" then
+				ZGTrackerSV.details = "summary"
 			end
+			ZGT_D("Details " .. ZGTrackerSV.details)
 			GUI_ShowLooter(ZGTrackerSV.details)
 		end
 	end)
@@ -966,6 +977,8 @@ local function GUI_Header()
 	return frame
 end
 
+
+
 local function GetFrame_InfoLine(name)
 	-- search for name
 	ZGT_D("   -- [GetFrame] LooterCount: " .. ZGTrackerSV.looter_count)
@@ -981,14 +994,38 @@ local function GetFrame_InfoLine(name)
 	return GUI_Frame.playerinfo[ZGTrackerSV.looter_count]
 end
 
-function ZGT_GUI_Add(index)
+
+
+function ZGT_GUI_Add(index, name, class)
+	local ClassColor = {
+		["UNKNOWN"]	= { { 0.51, 0.51, 0.51 }, "UNKNOWN" },
+		["DRUID"]	= { { 1.00, 0.49, 0.04 }, "Druid"   },
+		["HUNTER"]	= { { 0.67, 0.83, 0.45 }, "Hunter"  },
+		["MAGE"]	= { { 0.41, 0.80, 0.94 }, "Mage"    },
+		["PALADIN"]	= { { 0.96, 0.55, 0.73 }, "Paladin" },
+		["PRIEST"]	= { { 1.00, 1.00, 1.00 }, "Priest"  },
+		["ROGUE"]	= { { 1.00, 0.96, 0.41 }, "Rogue"   },
+		["SHAMAN"]	= { { 0.96, 0.55, 0.73 }, "Shaman"  },
+		--["SHAMAN"]	= { {0.00, 0.86, 0.73 }, "Shaman"  }, -- TBC Shaman Color
+		["WARLOCK"]	= { { 0.58, 0.51, 0.79 }, "Warlock" },
+		["WARRIOR"]	= { { 0.78, 0.61, 0.43 }, "Warrior" },
+	}
+
 	if index == 0 then
-		tCol = {.31, .01, .01} -- RED
+		local tCol = {}
+		tCol = {.311, .011, .011} -- RED
 		GUI_Frame.summaryinfo = GUI_InfoLine_New(GUI_Frame, GUI_Frame.tableheader, "Summary", 3, tCol)
 	else
 		if GUI_Frame.playerinfo[index] then
 			ZGT_D("  -- [ZGT_GUI_Add] frame " .. index .. " exist. Clearing values.")
-			GUI_Frame.playerinfo[index].fs_name:SetText("bogus" .. index)
+			local tCol = {}
+			tCol = ClassColor[class][1]
+			tCol[1] = tCol[1] - .39
+			tCol[2] = tCol[2] - .39
+			tCol[3] = tCol[3] - .39
+
+			GUI_Frame.playerinfo[index]:SetBackdropColor(tCol[1], tCol[2], tCol[3], ZGT_UI.BGALPHA)
+			GUI_Frame.playerinfo[index].fs_name:SetText(name)
 			GUI_Frame.playerinfo[index].fs_bijou:SetText("0")
 			GUI_Frame.playerinfo[index].fs_coin:SetText("0")
 		else
@@ -1001,26 +1038,32 @@ function ZGT_GUI_Add(index)
 			end
 
 			local tCol = {}
+			--[[
 			if (index - math.floor(index/2)*2) == 0 then
 				tCol = {.01, .31, .11} -- GREEN
 			else
 				tCol = {.01, .11, .31} -- BLUE
 			end
+			]]
+			tCol = ClassColor[class][1]
+			tCol[1] = tCol[1] - .39
+			tCol[2] = tCol[2] - .39
+			tCol[3] = tCol[3] - .39
 
-			GUI_Frame.playerinfo[index] = GUI_InfoLine_New(GUI_Frame, anchor_frame, "bogus" .. index, 2, tCol)
+			GUI_Frame.playerinfo[index] = GUI_InfoLine_New(GUI_Frame, anchor_frame, name, 2, tCol)
 		end
-		if ZGTrackerSV.details then
+
+		if (ZGTrackerSV.details == "self" or name == UnitName('player')) or ZGTrackerSV.details == "raid" then
 			GUI_Frame.playerinfo[index]:Show()
 			local height = (ZGT_UI.HEIGHT + 15) + ZGTrackerSV.looter_count * 13
 			GUI_Frame:SetHeight(height)
-		else
+		elseif ZGTrackerSV.details == "summary" then
 			GUI_Frame.playerinfo[index]:Hide()
 		end
 	end
 end
 
 function ZGT_GUI_Update(name)
-	ZGT_D("   -- [ZGT_GUI_Update] LooterCount: " .. ZGTrackerSV.looter_count)
 	if name == nil then
 		ZGT_D("   -- [ZGT_GUI_Update] Summary")
 		local frame = GUI_Frame.summaryinfo
@@ -1042,6 +1085,7 @@ function ZGT_GUI_Reset()
 
 	MoneyFrame_Update(getglobal("ZGT_GUI_SmallMoneyFrame"):GetName(), ZGTrackerSV.copper_total)
 
+
 	for i = 1, ZGTrackerSV.looter_count do
 		local frame = GUI_Frame.playerinfo[i]
 		if frame then
@@ -1058,11 +1102,15 @@ function ZGT_GUI_Reset()
 			break
 		end
 	end
+
+	local looter = UnitName('player')
+	local class = ZGTrackerSV.lootTable[looter]["class"]
+	ZGT_GUI_Add(1, looter, class)
+	ZGT_GUI_Update(looter)
+	GUI_ShowLooter(ZGTrackerSV.details)
 end
 
 function ZGT_GUI_Init()
-	local tCol = {}
-
 	if GUI_Frame then
 		if GUI_Frame.GetFrameType then
 			GUI_Frame:SetParent(nil)
@@ -1084,17 +1132,31 @@ function ZGT_GUI_Init()
 
 	GUI_Frame.playerinfo = {}
 
-	ZGT_D("Initial GUI filling...")
-	for i = 1, ZGTrackerSV.looter_count do
-		ZGT_GUI_Add(i)
-		ZGT_GUI_Update(looter)
+	local looter = UnitName('player')
+	local _, class = UnitClass('player')
+	if not ZGTrackerSV.lootTable[looter] then
+		ZGTrackerSV.looter_count = ZGTrackerSV.looter_count + 1
+		ZGTrackerSV.lootTable[looter] = {}
+		ZGTrackerSV.lootTable[looter]["coin"] = 0
+		ZGTrackerSV.lootTable[looter]["bijou"] = 0
+		ZGTrackerSV.lootTable[looter]["frame"] = ZGTrackerSV.looter_count
+		ZGTrackerSV.lootTable[looter]["class"] = class
 	end
-	ZGT_D("...done")
+	ZGT_GUI_Add(1, looter, class)
+	ZGT_GUI_Update(looter)
 
+	local count = 2
+	for k,v in pairs(ZGTrackerSV.lootTable) do
+		if k ~= looter then
+			ZGT_GUI_Add(count, k, v['class'])
+			ZGT_GUI_Update(k)
+			count = count + 1
+		end
+	end
+	
 	GUI_ShowLooter(ZGTrackerSV.details)
 
 	GUI_Frame.aboutframe = GUI_About(GUI_Frame)
-
 	GUI_Frame.optionframe = GUI_Option(GUI_Frame)	
 
 	return true
