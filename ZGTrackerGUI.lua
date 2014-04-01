@@ -802,6 +802,7 @@ local function GUI_Header()
 	btn_loot:SetHeight(14)
 	btn_loot:SetPoint("CENTER", frame, "TOPRIGHT", -51, -9)
 	btn_loot:RegisterForClicks("LeftButtonDown")
+	btn_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
 
 	if ZGTrackerSV.auto_roll == "no" then
 		btn_loot:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-No-Normal")
