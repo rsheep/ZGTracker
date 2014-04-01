@@ -678,7 +678,7 @@ end
 
 local function GUI_Money(parent)
 	local frame = CreateFrame("Frame", nil)
-	
+	frame:EnableMouse(true)
 	frame:SetClampedToScreen(true)
 	frame:SetFrameStrata("MEDIUM")
 	frame:SetScale(ZGT_UI.SCALE)
@@ -697,6 +697,36 @@ local function GUI_Money(parent)
 	smallmoneyframe:SetScript("OnLoad", nil)
 	smallmoneyframe:SetScript("OnEvent", nil)
 	smallmoneyframe:SetScript("OnShow", nil)
+
+	local copperbutton = getglobal("ZGT_GUI_SmallMoneyFrameCopperButton")
+	copperbutton:EnableMouse(false)
+	local silverbutton = getglobal("ZGT_GUI_SmallMoneyFrameSilverButton")
+	silverbutton:EnableMouse(false)
+	local goldbutton = getglobal("ZGT_GUI_SmallMoneyFrameGoldButton")
+	goldbutton:EnableMouse(false)
+
+	frame:SetScript("OnMouseDown", function()
+		local channel = nil
+		local announce = false
+		if arg1 == "LeftButton" and IsAltKeyDown() then
+			channel = "SAY"
+			announce = true
+		elseif arg1 == "RightButton" and IsAltKeyDown() then
+			channel = "RAID"
+			announce = true
+		end
+		if announce then
+			local date = ZGTrackerSV.reset_cdate .. " - " .. ZGTrackerSV.reset_time
+			local gold = math.floor(ZGTrackerSV.copper_total / 10000)
+			local silver = math.floor((ZGTrackerSV.copper_total - (gold * 10000)) / 100)
+			local copper = ZGTrackerSV.copper_total - (gold * 10000) - (silver * 100)
+			
+			local str = string.format("[ZGTracker]   dataset [%s]", date)
+			SendChatMessage(str, channel)
+			local str = string.format("%s golds, %s silver, %s copper   Looted", gold, silver, copper)
+			SendChatMessage(str, channel)
+		end
+	end)
 
 	frame.smallmoneyframe = smallmoneyframe
 
