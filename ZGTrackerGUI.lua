@@ -677,7 +677,7 @@ local function GUI_TableHeaders(parent)
 end
 
 local function GUI_Money(parent)
-	local frame = CreateFrame("Frame", nil)
+	local frame = CreateFrame("Frame", nil, parent)
 	frame:EnableMouse(true)
 	frame:SetClampedToScreen(true)
 	frame:SetFrameStrata("MEDIUM")
