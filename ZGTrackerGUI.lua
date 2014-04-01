@@ -371,7 +371,6 @@ local function GUI_Option(parent)
 	fs_display_money:SetPoint("TOPLEFT", frame_display, "TOPLEFT", 3, -16)
 	fs_display_money:SetFont(ZGT_UI.FONT_FILE, 7)
 	fs_display_money:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
-	--fs_display_money:SetText("|cff55CC55Display Money Frame|r")
 	fs_display_money:SetText("Display Money Frame:")
 
 	frame.fs_display_money = fs_display_money
@@ -385,11 +384,11 @@ local function GUI_Option(parent)
 	if ZGTrackerSV.display_money == true then
 		btn_display_money:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
 		btn_display_money:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
-		btn_display_money:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")
+		btn_display_money:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")
 	else
 		btn_display_money:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
 		btn_display_money:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
-		btn_display_money:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+		btn_display_money:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
 	end
 
 	btn_display_money:SetScript("OnClick", function()
@@ -399,14 +398,14 @@ local function GUI_Option(parent)
 				ZGTrackerSV.display_money = false
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
-				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
 				frame.moneyframe:Hide()
 				frame.optionframe:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -1)
 			else
 				ZGTrackerSV.display_money = true
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
-				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")
 				frame.moneyframe:Show()
 				frame.optionframe:SetPoint("TOPLEFT", frame.moneyframe, "BOTTOMLEFT", 0, -1)
 			end
@@ -441,7 +440,6 @@ local function GUI_Option(parent)
 	fs_spam_loot:SetPoint("TOPLEFT", frame_spam, "TOPLEFT", 3, -16)
 	fs_spam_loot:SetFont(ZGT_UI.FONT_FILE, 7)
 	fs_spam_loot:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
-	--fs_spam_loot:SetText("|cff55CC55Suppress Loot Spam:|r")
 	fs_spam_loot:SetText("Suppress Loot Spam:")
 
 	frame.fs_spam_loot = fs_spam_loot
@@ -455,11 +453,11 @@ local function GUI_Option(parent)
 	if ZGTrackerSV.spam_loot == true then
 		btn_spam_loot:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
 		btn_spam_loot:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
-		btn_spam_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")
+		btn_spam_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")
 	else
 		btn_spam_loot:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
 		btn_spam_loot:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
-		btn_spam_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+		btn_spam_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
 	end
 
 	btn_spam_loot:SetScript("OnClick", function()
@@ -468,12 +466,12 @@ local function GUI_Option(parent)
 				ZGTrackerSV.spam_loot = false
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
-				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
 			else
 				ZGTrackerSV.spam_loot = true
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
-				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")				
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")				
 			end
 		end
 	end)
@@ -485,7 +483,6 @@ local function GUI_Option(parent)
 	fs_spam_money:SetPoint("TOPLEFT", frame_spam, "TOPLEFT", 3, -28)
 	fs_spam_money:SetFont(ZGT_UI.FONT_FILE, 7)
 	fs_spam_money:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
-	--fs_spam_money:SetText("|cff55CC55Suppress Money Spam:|r")
 	fs_spam_money:SetText("Suppress Money Spam:")
 
 	frame.fs_spam_money = fs_spam_money
@@ -499,11 +496,11 @@ local function GUI_Option(parent)
 	if ZGTrackerSV.spam_money == true then
 		btn_spam_money:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
 		btn_spam_money:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
-		btn_spam_money:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")
+		btn_spam_money:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")
 	else
 		btn_spam_money:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
 		btn_spam_money:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
-		btn_spam_money:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+		btn_spam_money:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
 	end
 
 	btn_spam_money:SetScript("OnClick", function()
@@ -512,12 +509,12 @@ local function GUI_Option(parent)
 				ZGTrackerSV.spam_money = false
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
-				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
 			else
 				ZGTrackerSV.spam_money = true
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
-				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")				
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")				
 			end
 		end
 	end)
@@ -535,9 +532,6 @@ local function GUI_ShowLooter(toggle)
 			if k == UnitName('player') and v["frame"] == 1 then
 				local frame = GUI_Frame.playerinfo[v["frame"]]
 				if frame then
-					--frame.fs_name:SetText(k)
-					--frame.fs_bijou:SetText(v["bijou"])
-					--frame.fs_coin:SetText(v["coin"])
 					frame:Show()
 				end
 			end
@@ -552,9 +546,6 @@ local function GUI_ShowLooter(toggle)
 				count = count + 1
 				local frame = GUI_Frame.playerinfo[v["frame"]]
 				if frame then
-					--frame.fs_name:SetText(k)
-					--frame.fs_bijou:SetText(v["bijou"])
-					--frame.fs_coin:SetText(v["coin"])
 					frame:Show()
 				end
 			end
@@ -580,7 +571,6 @@ local function GUI_InfoLine_New(parent, anchorframe, name, offset, tCol)
 	local fs_coin_offset = floor(hwidth/4 + 0.5) * 1 - floor(hwidth/4 + 0.5) + 5
 
 	local frame = CreateFrame("Frame", nil, parent)
-	--frame:SetFrameLevel(3)
 	frame:EnableMouse(true)
 	frame:SetWidth(hwidth)
 	frame:SetHeight(11)
@@ -761,7 +751,7 @@ local function GUI_Header()
 	btn_about:RegisterForClicks("LeftButtonDown")
 	btn_about:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Normal")
 	btn_about:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Pushed")
-	btn_about:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+	btn_about:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
 	
 	
 	btn_about:SetScript("OnClick", function()
@@ -788,8 +778,7 @@ local function GUI_Header()
 	btn_option:RegisterForClicks("LeftButtonDown")
 	btn_option:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Option-Normal")
 	btn_option:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Option-Pushed")
-	--btn_option:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Option-Highlight")
-	btn_option:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+	btn_option:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
 	
 	btn_option:SetScript("OnClick", function()
 		if arg1 == "LeftButton" then
@@ -817,19 +806,15 @@ local function GUI_Header()
 	if ZGTrackerSV.auto_roll == "no" then
 		btn_loot:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-No-Normal")
 		btn_loot:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-No-Pushed")
-		btn_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
 	elseif ZGTrackerSV.auto_roll == "Need" then
 		btn_loot:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Need-Normal")
 		btn_loot:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Need-Pushed")
-		btn_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
 	elseif ZGTrackerSV.auto_roll == "Greed" then
 		btn_loot:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Greed-Normal")
 		btn_loot:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Green-Pushed")
-		btn_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
 	elseif ZGTrackerSV.auto_roll == "Pass" then
 		btn_loot:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Pass-Normal")
 		btn_loot:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Pass-Pushed")
-		btn_loot:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
 	end
 
 	btn_loot:SetScript("OnClick", function()
@@ -838,22 +823,18 @@ local function GUI_Header()
 				ZGTrackerSV.auto_roll = "Need"
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Need-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Need-Pushed")
-				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
 			elseif ZGTrackerSV.auto_roll == "Need" then
 				ZGTrackerSV.auto_roll = "Greed"
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Greed-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Green-Pushed")
-				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
 			elseif ZGTrackerSV.auto_roll == "Greed" then
 				ZGTrackerSV.auto_roll = "Pass"
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Pass-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Pass-Pushed")
-				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
 			elseif ZGTrackerSV.auto_roll == "Pass" then
 				ZGTrackerSV.auto_roll = "no"
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-No-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-No-Pushed")
-				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")				
 			end
 		end
 	end)
@@ -868,8 +849,7 @@ local function GUI_Header()
 	btn_flash:RegisterForClicks("LeftButtonDown")
 	btn_flash:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Flash-Normal")
 	btn_flash:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Flash-Pushed")
-	--btn_flash:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Flash-Highlight")
-	btn_flash:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")
+	btn_flash:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")
 	
 	btn_flash:SetScript("OnClick", function()
 		if arg1 == "LeftButton" then
@@ -888,7 +868,7 @@ local function GUI_Header()
 	btn_detail:RegisterForClicks("LeftButtonDown")
 	btn_detail:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Details-Normal")
 	btn_detail:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Details-Pushed")
-	btn_detail:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-About-Highlight")
+	btn_detail:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
 	
 	btn_detail:SetScript("OnClick", function()
 		if arg1 == "LeftButton" then
@@ -913,7 +893,7 @@ local function GUI_Header()
 	btn_close:RegisterForClicks("LeftButtonDown")
 	btn_close:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Normal")
 	btn_close:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Pushed")
-	btn_close:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Close-Highlight")
+	btn_close:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")
 	
 	btn_close:SetScript("OnClick", function()
 		if arg1 == "LeftButton" then
@@ -1016,14 +996,14 @@ function ZGT_GUI_Add(index, name, class)
 		tCol = {.311, .011, .011} -- RED
 		GUI_Frame.summaryinfo = GUI_InfoLine_New(GUI_Frame, GUI_Frame.tableheader, "Summary", 3, tCol)
 	else
+		local tCol = {}
+		tCol = ClassColor[class][1]
+		tCol[1] = tCol[1] - .39
+		tCol[2] = tCol[2] - .39
+		tCol[3] = tCol[3] - .39
+
 		if GUI_Frame.playerinfo[index] then
 			ZGT_D("  -- [ZGT_GUI_Add] frame " .. index .. " exist. Clearing values.")
-			local tCol = {}
-			tCol = ClassColor[class][1]
-			tCol[1] = tCol[1] - .39
-			tCol[2] = tCol[2] - .39
-			tCol[3] = tCol[3] - .39
-
 			GUI_Frame.playerinfo[index]:SetBackdropColor(tCol[1], tCol[2], tCol[3], ZGT_UI.BGALPHA)
 			GUI_Frame.playerinfo[index].fs_name:SetText(name)
 			GUI_Frame.playerinfo[index].fs_bijou:SetText("0")
@@ -1036,19 +1016,6 @@ function ZGT_GUI_Add(index, name, class)
 			else
 				anchor_frame = GUI_Frame.playerinfo[index - 1]
 			end
-
-			local tCol = {}
-			--[[
-			if (index - math.floor(index/2)*2) == 0 then
-				tCol = {.01, .31, .11} -- GREEN
-			else
-				tCol = {.01, .11, .31} -- BLUE
-			end
-			]]
-			tCol = ClassColor[class][1]
-			tCol[1] = tCol[1] - .39
-			tCol[2] = tCol[2] - .39
-			tCol[3] = tCol[3] - .39
 
 			GUI_Frame.playerinfo[index] = GUI_InfoLine_New(GUI_Frame, anchor_frame, name, 2, tCol)
 		end
@@ -1090,7 +1057,6 @@ function ZGT_GUI_Reset()
 		local frame = GUI_Frame.playerinfo[i]
 		if frame then
 			if frame:IsVisible() then
-				--ZGT_D("  -- Hiding playerinfo[" .. i .. "]")
 				frame:Hide()
 				frame:GetParent():SetHeight(frame:GetParent():GetHeight() - 13)
 			end
@@ -1098,7 +1064,6 @@ function ZGT_GUI_Reset()
 			frame.fs_bijou:SetText("0")
 			frame.fs_coin:SetText("0")
 		else
-			--ZGT_D("  -- reaced the end. i: " .. i)
 			break
 		end
 	end
@@ -1132,6 +1097,7 @@ function ZGT_GUI_Init()
 
 	GUI_Frame.playerinfo = {}
 
+	-- Fill in "self"
 	local looter = UnitName('player')
 	local _, class = UnitClass('player')
 	if not ZGTrackerSV.lootTable[looter] then
@@ -1145,6 +1111,7 @@ function ZGT_GUI_Init()
 	ZGT_GUI_Add(1, looter, class)
 	ZGT_GUI_Update(looter)
 
+	-- Deal with already existant looters
 	local count = 2
 	for k,v in pairs(ZGTrackerSV.lootTable) do
 		if k ~= looter then

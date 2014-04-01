@@ -4,6 +4,7 @@ ZGTrackerSV = {
 		--	["coin"] = 0
 		--	["bijou"] = 0
 		--	["frame"] = x
+		--  ["class"] = "STRING"
 		--},
 	},
 	bijou_total = 0,
@@ -22,7 +23,7 @@ ZGTrackerSV = {
 	spam_money = false,
 }
 
-local ZGT_VERSION = 0.06
+local ZGT_VERSION = 0.07
 local ZGT_DEBUG = false
 
 local ZGT_RESET_CHECK = true
@@ -49,11 +50,8 @@ end
 
 
 
-
-
 local function ZGT_ChatFrame_OnEvent(event)
 	if event == "CHAT_MSG_LOOT" then
-		
 		local _, _, loot_coin = string.find(arg1 , "(%[.+Coin%])")
 		local _, _, loot_bijou = string.find(arg1 , "(%[.+Bijou%])") 
 
@@ -62,7 +60,6 @@ local function ZGT_ChatFrame_OnEvent(event)
 			local name = nil
 			local selected = string.find(arg1, "(ha%a+%sselected)")
 			local passed = string.find(arg1, "(passed%son:)")
-
 			local _, _, roll = string.find(arg1, "(%a+)%sRoll%s-%s")
 
 			if selected or passed then 
@@ -92,9 +89,6 @@ local function ZGT_ChatFrame_OnEvent(event)
 
 	Original_ChatFrame_OnEvent(event)
 end
-
-
-
 
 
 
@@ -150,54 +144,7 @@ local function ZGT_ResetData()
 	local ldate = date("%A %d %B %Y")
 	local lcdate = date("%d/%m/%y")
 	local ltime = date("%H:%M")
-	--[[
-	local prev_details = nil
-	local prev_auto_roll = nil
-	local prev_display_money = nil
-	local prev_spam_loot = nil
-	local prev_spam_money = nil
-
-	if ZGTrackerSV.details == true or ZGTrackerSV.details == false then
-		prev_details = ZGTrackerSV.details
-	else
-		prev_details = true
-	end
-
-	if ZGTrackerSV.auto_roll == "no" or ZGTrackerSV.auto_roll == "Need" or 
-		ZGTrackerSV.auto_roll == "Greed" or ZGTrackerSV.auto_roll == "Pass" then
-		prev_auto_roll = ZGTrackerSV.auto_roll
-	else
-		prev_auto_roll = "no"
-	end
-
-	if ZGTrackerSV.display_money == true or ZGTrackerSV.display_money == false then
-		prev_display_money = ZGTrackerSV.display_money
-	else
-		prev_display_money = true
-	end
-
-	if ZGTrackerSV.spam_loot == true or ZGTrackerSV.spam_loot == false then
-		prev_spam_loot = ZGTrackerSV.spam_loot
-	else
-		prev_spam_loot = false
-	end
-
-	if ZGTrackerSV.spam_money == true or ZGTrackerSV.spam_money == false then
-		prev_spam_money = ZGTrackerSV.spam_money
-	else
-		prev_spam_money = true
-	end
-
-	ZGTrackerSV = {}
-
-	ZGTrackerSV.details = prev_details
-	ZGTrackerSV.auto_roll = prev_auto_roll
-	ZGTrackerSV.display_money = prev_display_money
-	ZGTrackerSV.spam_loot = prev_spam_loot
-	ZGTrackerSV.spam_money = prev_spam_money
-	]]
-
-
+	
 	ZGTrackerSV.copper_total = 0
 	ZGTrackerSV.bijou_total = 0
 	ZGTrackerSV.coin_total = 0
@@ -236,13 +183,9 @@ local function ZGT_AutoRoll(id)
 	end
 
 	if ZGTrackerSV.auto_roll ~= "no" then
-		--ZGT_D("ID: " .. id .. " - AutoRoll: " .. ZGTrackerSV.auto_roll .. " - rollval: " .. tostring(roll_value))
 		local _, name, _, quality = GetLootRollItemInfo(id);
 		if string.find(name ,"Hakkari Bijou") or string.find(name ,"Coin") then
 			RollOnLoot(id, roll_value)
-			--local _, _, _, hex = GetItemQualityColor(quality)
-			--ZGT_STATUS("Autoroll " .. hex .. ZGTrackerSV.auto_roll .. " " .. GetLootRollItemLink(id))
-			--ZGT_STATUS("Autoroll " .. ZGTrackerSV.auto_roll .. " " .. GetLootRollItemLink(id))
 			return
 		end	
 	end	
@@ -267,7 +210,6 @@ local function ZGT_ScanLootMSG(msg)
 		end
 
 		if loottype == "coin" or loottype == "bijou" then
-			--looter = string.sub(msg, string.find(msg, "%a+"))
 			_, _, looter = string.find(msg, "(%a+)")
 			if looter == "You" then
 				looter = UnitName('player')
@@ -286,7 +228,6 @@ local function ZGT_AddLoot(loottype, looter, class)
 	ZGTrackerSV.looter_count = ZGTrackerSV.looter_count or 0
 
 	if ZGT_RESET_CHECK then
-		--ZGT_STATUS("'temp' data already present. Use '/zgt reset temp' to wipe it.")
 		ZGT_RESET_CHECK = false
 
 		if (ZGTrackerSV.bijou_total or ZGTrackerSV.coin_total) and (ZGTrackerSV.bijou_total > 0 or ZGTrackerSV.coin_total > 0) then
@@ -300,7 +241,6 @@ local function ZGT_AddLoot(loottype, looter, class)
 			ZGT_STATUS("Friendly Reminder! Use '/zgt reset' at raid start to wipe Loot-Dataset!")
 		end
 	end
-
 
 	if ZGTrackerSV and loottype and looter then
 		if loottype == "coin" then
@@ -323,7 +263,6 @@ local function ZGT_AddLoot(loottype, looter, class)
 			ZGTrackerSV.lootTable[looter]["frame"] = ZGTrackerSV.looter_count
 			ZGTrackerSV.lootTable[looter]["class"] = class
 			ZGTrackerSV.lootTable[looter][loottype] = ZGTrackerSV.lootTable[looter][loottype] + 1
-			ZGT_D("Adding Looter: " .. looter .. " - Class: " .. class)
 			ZGT_GUI_Add(ZGTrackerSV.looter_count, looter, class)
 		end
 		-- summary update
@@ -352,7 +291,6 @@ local function ZGT_Print_PlayerData(name)
 		ZGT_STATUS(str)
 		local str = string.format("  Bijous: [%3s]   Coins: [%3s]", ZGTrackerSV.lootTable[name]["bijou"], ZGTrackerSV.lootTable[name]["coin"])
 		ZGT_STATUS(str, "  " .. name)
-	
 	end
 end
 
@@ -378,7 +316,6 @@ local function ZGT_Print_SummaryData()
 		local resettime = ZGTrackerSV.reset_cdate .. " - " .. ZGTrackerSV.reset_time
 		local str = string.format("dataset [%s]", resettime)
 		ZGT_STATUS(str)
-		--local str = string.format("-- Bijous: [%3s]   Coins: [%3s]", ZGTrackerSV.bijou_total, ZGTrackerSV.coin_total)
 		local str = string.format("  Bijous: [%3s]   Coins: [%3s]", ZGTrackerSV.bijou_total, ZGTrackerSV.coin_total)
 		ZGT_STATUS(str, "  Summary")
 	end
@@ -428,8 +365,6 @@ local function ZGT_RaidAnnounce(name)
 
 	if not data then
 		ZGT_STATUS("No loot-data available.")
-		--local str = string.format("--- [%s] loot-data is empty", "Summary")
-		--SendChatMessage(str, "RAID", nil, nil)
 		return false
 	else
 		ZGTrackerSV.coin_total = ZGTrackerSV.coin_total or 0
@@ -455,8 +390,6 @@ local function ZGT_RaidAnnounce(name)
 		end
 	end
 end
-
-
 
 
 
@@ -515,15 +448,6 @@ local function ZGT_Event_CHAT_MSG_SYSTEM(msg)
 		if not frame:IsVisible() then
 			frame:Show()
 		end
-		if ZGT_InstanceCheck() then
-			--ZGT_D(" We're inside ZG! (Welcome message)")
-		end
-	end
-	
-	if msg == "You are now saved to this instance" then
-		if ZGT_InstanceCheck() then
-			--ZGT_D(" You're now saved for Zul'Gurub.")
-		end
 	end
 end
 
@@ -532,19 +456,17 @@ local function ZGT_Event_START_LOOT_ROLL(id, time)
 	--time 	- arg2	The roll time. 
 
 	if ZGT_InstanceCheck() then
-		ZGT_AutoRoll(arg1)
+		ZGT_AutoRoll(id)
 	end
 end
 
 local function ZGT_Event_ZONE_CHANGED_NEW_AREA()
 	local frame = getglobal("ZGT_GUI")
 	if ZGT_InstanceCheck() then
-		--ZGT_D(" We're inside ZG! (event UPDATE_INSTANCE_INFO)")
 		if not frame:IsVisible() then
 			frame:Show()
 		end
 	else
-		--ZGT_D(" NOT inside an instance.")
 		if frame:IsVisible() then
 			frame:Hide()
 		end
@@ -553,9 +475,9 @@ end
 
 
 
-
-
 -- 
+-- Addon Main
+--
 ChatFrame_OnEvent = ZGT_ChatFrame_OnEvent
 
 -- Slash commands
@@ -572,7 +494,6 @@ SlashCmdList["ZGTCOMMANDS"] = function(str)
 	if command then
 		command = string.lower(command)
 		if command == "" then
-			--command = "help"
 			command = "help"
 		end
 	else
@@ -629,15 +550,14 @@ StaticPopupDialogs["ZGT_RESET_DATA_DIALOG"] = {
 	text = "Are you really sure do you want to reset the existing Coins/Bijous counters?\n\nDataset Reset Time: %s",
 	button1 = "Yes",
 	button2 = "No",
-	OnAccept = function(data, data2)
+	OnAccept = function(data, data2, data3)
 		ZGT_ResetData()
-		--ZGT_D("Data Reset successful.")
 		if data and data2 then
-			ZGT_AddLoot(data, data2)
+			ZGT_AddLoot(data, data2, data3)
 		end
 	end,
 	OnCancel = function()
-		--ZGT_D("Data Reset was canceled.")
+		ZGT_STATUS("Loot-Data Reset Canceled.")
 	end,
 	timeout = 0,
 	whileDead = true,
@@ -649,17 +569,11 @@ StaticPopupDialogs["ZGT_RESET_DATA_DIALOG"] = {
 local coreframe = CreateFrame("Frame", nil)
 coreframe:RegisterEvent("ADDON_LOADED")
 coreframe:RegisterEvent("VARIABLES_LOADED")
---coreframe:RegisterEvent("PLAYER_ENTERING_WORLD")
 coreframe:RegisterEvent("CHAT_MSG_LOOT")
 coreframe:RegisterEvent("CHAT_MSG_MONEY")
 coreframe:RegisterEvent("CHAT_MSG_SYSTEM")
---coreframe:RegisterEvent("UPDATE_INSTANCE_INFO")
 coreframe:RegisterEvent("START_LOOT_ROLL")
---coreframe:RegisterEvent("WORLD_MAP_UPDATE")
---coreframe:RegisterEvent("WORLD_MAP_NAME_UPDATE")
 
---coreframe:RegisterEvent("ZONE_CHANGED")
---coreframe:RegisterEvent("ZONE_CHANGED_INDOORS")
 coreframe:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 
 coreframe:SetScript("OnEvent", function()
@@ -672,22 +586,9 @@ coreframe:SetScript("OnEvent", function()
 	elseif event == "START_LOOT_ROLL" then
 		ZGT_Event_START_LOOT_ROLL(arg1, arg2)
 
-	--elseif event == "ZONE_CHANGED" or event == "ZONE_CHANGED_INDOORS" then
-	--	ZGT_D(event)
-
 	elseif event == "ZONE_CHANGED_NEW_AREA" then
 		ZGT_Event_ZONE_CHANGED_NEW_AREA()
 
-	--elseif event == "WORLD_MAP_UPDATE" or event == "WORLD_MAP_NAME_UPDATE" then
-	--	ZGT_D(event)
-	
-	--elseif event == "UPDATE_INSTANCE_INFO" then
-	--	ZGT_D(event)
-		--ZGT_Event_UPDATE_INSTANCE_INFO()
-
-	--elseif event == "PLAYER_ENTERING_WORLD" then
-	--	ZGT_D(event)
-	
 	elseif event == "CHAT_MSG_SYSTEM" then
 		ZGT_Event_CHAT_MSG_SYSTEM(arg1)
 
@@ -698,7 +599,6 @@ coreframe:SetScript("OnEvent", function()
 			local ZGT_VERSION = GetAddOnMetadata("ZGTracker", "Version")
 			local ZGT_AUTHOR = GetAddOnMetadata("ZGTracker", "Author")
 			DEFAULT_CHAT_FRAME:AddMessage(ZGT_TITLE .. " v" .. ZGT_VERSION .. " by " .."|cffFF0066".. ZGT_AUTHOR .."|cffffffff".. " loaded, type |cff00eeee".." /zgt".."|cffffffff for more info.")
-
 		end
 
 	elseif event == "VARIABLES_LOADED" then
