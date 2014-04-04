@@ -324,7 +324,7 @@ local function GUI_Option(parent)
 	frame:SetFrameStrata("MEDIUM")
 	frame:SetScale(ZGT_UI.SCALE)
 	frame:SetWidth(ZGT_UI.WIDTH)
-	frame:SetHeight(90)
+	frame:SetHeight(102)
 
 	if getglobal("ZGT_GUI").moneyframe:IsVisible() then
 		frame:SetPoint("TOPLEFT", parent.moneyframe, "BOTTOMLEFT", 0, -1)
@@ -415,11 +415,11 @@ local function GUI_Option(parent)
 	frame.btn_display_money = btn_display_money
 
 	--
-	-- ChatSpem Options
+	-- ChatSpam Options
 	--
 	local frame_spam = CreateFrame("Frame", nil, frame)
 	frame_spam:SetWidth(ZGT_UI.WIDTH - 5 * 2)
-	frame_spam:SetHeight(38)
+	frame_spam:SetHeight(50)
 	frame_spam:SetPoint("TOPLEFT", frame_display, "BOTTOMLEFT", 0, -3)
 	frame_spam:SetBackdrop( {
 		bgFile = ZGT_UI.BG_TEXTURE_FILE
@@ -436,8 +436,51 @@ local function GUI_Option(parent)
 
 	frame.fs_spam = fs_spam
 
+	local fs_auto_roll_message = frame_spam:CreateFontString(nil, "ARTWORK")
+	fs_auto_roll_message:SetPoint("TOPLEFT", frame_spam, "TOPLEFT", 3, -16)
+	fs_auto_roll_message:SetFont(ZGT_UI.FONT_FILE, 7)
+	fs_auto_roll_message:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
+	fs_auto_roll_message:SetText("AutoRoll Messages:")
+
+	frame.fs_auto_roll_message = fs_auto_roll_message
+
+	local btn_auto_roll_message = CreateFrame("Button", nil, frame_spam)
+	btn_auto_roll_message:SetWidth(10)
+	btn_auto_roll_message:SetHeight(10)
+	btn_auto_roll_message:SetPoint("TOPLEFT", frame_spam, "TOPRIGHT", -14, -14)
+	btn_auto_roll_message:RegisterForClicks("LeftButtonDown")
+
+	if ZGTrackerSV.auto_roll_message == true then
+		btn_auto_roll_message:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
+		btn_auto_roll_message:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
+		btn_auto_roll_message:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")
+	else
+		btn_auto_roll_message:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
+		btn_auto_roll_message:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
+		btn_auto_roll_message:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
+	end
+
+	btn_auto_roll_message:SetScript("OnClick", function()
+		if arg1 == "LeftButton" then
+			if ZGTrackerSV.auto_roll_message == true then
+				ZGTrackerSV.auto_roll_message = false
+				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
+				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
+			else
+				ZGTrackerSV.auto_roll_message = true
+				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
+				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")				
+			end
+		end
+	end)
+
+	frame.btn_auto_roll_message = btn_auto_roll_message
+
+
 	local fs_spam_loot = frame_spam:CreateFontString(nil, "ARTWORK")
-	fs_spam_loot:SetPoint("TOPLEFT", frame_spam, "TOPLEFT", 3, -16)
+	fs_spam_loot:SetPoint("TOPLEFT", frame_spam, "TOPLEFT", 3, -28)
 	fs_spam_loot:SetFont(ZGT_UI.FONT_FILE, 7)
 	fs_spam_loot:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
 	fs_spam_loot:SetText("Suppress Loot Spam:")
@@ -447,7 +490,7 @@ local function GUI_Option(parent)
 	local btn_spam_loot = CreateFrame("Button", nil, frame_spam)
 	btn_spam_loot:SetWidth(10)
 	btn_spam_loot:SetHeight(10)
-	btn_spam_loot:SetPoint("TOPLEFT", frame_spam, "TOPRIGHT", -14, -14)
+	btn_spam_loot:SetPoint("TOPLEFT", frame_spam, "TOPRIGHT", -14, -26)
 	btn_spam_loot:RegisterForClicks("LeftButtonDown")
 
 	if ZGTrackerSV.spam_loot == true then
@@ -480,7 +523,7 @@ local function GUI_Option(parent)
 
 
 	local fs_spam_money = frame_spam:CreateFontString(nil, "ARTWORK")
-	fs_spam_money:SetPoint("TOPLEFT", frame_spam, "TOPLEFT", 3, -28)
+	fs_spam_money:SetPoint("TOPLEFT", frame_spam, "TOPLEFT", 3, -40)
 	fs_spam_money:SetFont(ZGT_UI.FONT_FILE, 7)
 	fs_spam_money:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
 	fs_spam_money:SetText("Suppress Money Spam:")
@@ -490,7 +533,7 @@ local function GUI_Option(parent)
 	local btn_spam_money = CreateFrame("Button", nil, frame_spam)
 	btn_spam_money:SetWidth(10)
 	btn_spam_money:SetHeight(10)
-	btn_spam_money:SetPoint("TOPLEFT", frame_spam, "TOPRIGHT", -14, -26)
+	btn_spam_money:SetPoint("TOPLEFT", frame_spam, "TOPRIGHT", -14, -38)
 	btn_spam_money:RegisterForClicks("LeftButtonDown")
 
 	if ZGTrackerSV.spam_money == true then
@@ -514,7 +557,7 @@ local function GUI_Option(parent)
 				ZGTrackerSV.spam_money = true
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
-				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")				
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")
 			end
 		end
 	end)
@@ -677,7 +720,7 @@ local function GUI_TableHeaders(parent)
 end
 
 local function GUI_Money(parent)
-	local frame = CreateFrame("Frame", nil, parent)
+	local frame = CreateFrame("Frame", "ZGT_GUI_MoneyFrame", parent)
 	frame:EnableMouse(true)
 	frame:SetClampedToScreen(true)
 	frame:SetFrameStrata("MEDIUM")
@@ -723,7 +766,7 @@ local function GUI_Money(parent)
 			
 			local str = string.format("[ZGTracker]   dataset [%s]", date)
 			SendChatMessage(str, channel)
-			local str = string.format("%s golds, %s silver, %s copper   Looted", gold, silver, copper)
+			local str = string.format("  %s golds, %s silver, %s copper   Looted", gold, silver, copper)
 			SendChatMessage(str, channel)
 		end
 	end)

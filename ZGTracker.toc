@@ -1,11 +1,20 @@
 ## Interface: 11200
 ## Title: |cff55CC55ZG|cffffffffTracker
 ## Notes: Tracks Zul'Gurub coins and bijous
+## Version: 0.091
 ## Author: mrmr
-## Version: 0.071
 ## X-Website : http://github.com/rsheep/ZGTracker
-## Dependencies:
+## X-Category: Raid
+## OptionalDeps: Ace2, FuBar, FuBarPlugin-2.0, TabletLib
+## X-Embeds: FuBarPlugin-2.0, TabletLib
 ## SavedVariablesPerCharacter: ZGTrackerSV
+
+Libs\AceLibrary\AceLibrary.lua
+Libs\AceOO-2.0\AceOO-2.0.lua
+Libs\Tablet-2.0\Tablet-2.0.lua
+Libs\FuBarPlugin-2.0\FuBarPlugin-2.0.lua
 
 ZGTrackerGUI.lua
 ZGTracker.lua
+
+ZGTrackerFu.lua

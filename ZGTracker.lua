@@ -15,15 +15,21 @@ ZGTrackerSV = {
 	reset_cdate = "N/A",
 	details = "raid", -- summary/self/raid
 	auto_roll = "no",
+	auto_roll_message = true,
 	x_anchor = 200,
 	y_anchor = 50,
 	copper_total = 0,
 	display_money = true,
 	spam_loot = false,
 	spam_money = false,
+	ZGTFu = {
+		ShowLabels = true,
+		ShowCoin = true,
+		ShowBijou = true,
+	},
 }
 
-local ZGT_VERSION = 0.071
+local ZGT_VERSION = 0.091
 local ZGT_DEBUG = false
 
 local ZGT_RESET_CHECK = true
@@ -71,7 +77,9 @@ local function ZGT_ChatFrame_OnEvent(event)
 				if name == UnitName('player') then
 					local _, _, link = string.find(arg1, "(\124%x+\124Hitem:.-\124h.-\124h\124r)")
 					local _, _, value = string.find(arg1, "(%d+)")
-					ZGT_STATUS("  |cff0e9900AutoRoll  [|r|cfffe1111" .. roll .. "|r|cff0e9900]:|r|cffffffff " .. value .. "|r  " .. link)
+					if ZGTrackerSV.auto_roll_message then
+						ZGT_STATUS("  |cff0e9900AutoRoll  [|r|cfffe1111" .. roll .. "|r|cff0e9900]:|r|cffffffff " .. value .. "|r  on " .. link)
+					end
 				end
 			else
 				msgtype = 'other'
