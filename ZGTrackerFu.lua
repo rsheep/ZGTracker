@@ -128,6 +128,9 @@ function ZGTFu:OnInitialize()
 	self.defaultPosition = "RIGHT"
 	self.defaultMinimapPosition = 180
 	self.independentProfile = false
+	if not ZGTrackerSV["ZGTFu"] then
+		ZGTrackerSV["ZGTFu"] = {}
+	end
 end
 
 function ZGTFu:OnEnable()

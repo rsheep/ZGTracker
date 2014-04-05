@@ -13,6 +13,7 @@ ZGTrackerSV = {
 	reset_time = "N/A",
 	reset_date = "N/A",
 	reset_cdate = "N/A",
+	reset_epoch = 0,
 	details = "raid", -- summary/self/raid
 	auto_roll = "no",
 	auto_roll_message = true,
@@ -29,7 +30,7 @@ ZGTrackerSV = {
 	},
 }
 
-local ZGT_VERSION = 0.091
+local ZGT_VERSION = 0.093
 local ZGT_DEBUG = false
 
 local ZGT_RESET_CHECK = true
@@ -149,17 +150,20 @@ local function ZGT_PrintChat_About()
 end
 
 local function ZGT_ResetData()
-	local ldate = date("%A %d %B %Y")
-	local lcdate = date("%d/%m/%y")
-	local ltime = date("%H:%M")
+	local localdate = date("%A %d %B %Y")
+	local localcdate = date("%d/%m/%y")
+	local localtime = date("%H:%M")
+	local epoch = time()
 	
 	ZGTrackerSV.copper_total = 0
 	ZGTrackerSV.bijou_total = 0
 	ZGTrackerSV.coin_total = 0
 	ZGTrackerSV.looter_count = 0
-	ZGTrackerSV.reset_time = ltime
-	ZGTrackerSV.reset_date = ldate
-	ZGTrackerSV.reset_cdate = lcdate
+	
+	ZGTrackerSV.reset_date = localdate
+	ZGTrackerSV.reset_cdate = localcdate
+	ZGTrackerSV.reset_time = localtime
+	ZGTrackerSV.reset_epoch = epoch
 	
 
 	ZGTrackerSV.lootTable = {}
@@ -176,7 +180,7 @@ local function ZGT_ResetData()
 
 	ZGT_GUI_Reset()
 
-	ZGT_STATUS("Loot-Data Reset Successfull. [ " .. lcdate .. " - " .. ltime.. " ]")
+	ZGT_STATUS("Loot-Data Reset Successfull. [ " .. localcdate .. " - " .. localtime.. " ]")
 end
 
 local function ZGT_AutoRoll(id)
@@ -214,7 +218,7 @@ local function ZGT_ScanLootMSG(msg)
 			loottype = "bijou"
 		else
 			loottype = "other"
-			return loottype, looter
+			return loottype--, looter
 		end
 
 		if loottype == "coin" or loottype == "bijou" then
@@ -227,18 +231,14 @@ local function ZGT_ScanLootMSG(msg)
 
 	class = ZGT_GetClass(looter)
 
-	return loottype, looter, class
-end
-
-local function ZGT_AddLoot(loottype, looter, class)
-	ZGTrackerSV.coin_total = ZGTrackerSV.coin_total or 0
-	ZGTrackerSV.bijou_total = ZGTrackerSV.bijou_total or 0
-	ZGTrackerSV.looter_count = ZGTrackerSV.looter_count or 0
-
 	if ZGT_RESET_CHECK then
 		ZGT_RESET_CHECK = false
 
-		if (ZGTrackerSV.bijou_total or ZGTrackerSV.coin_total) and (ZGTrackerSV.bijou_total > 0 or ZGTrackerSV.coin_total > 0) then
+		local timediff = time() - ZGTrackerSV.reset_epoch
+
+		if (ZGTrackerSV.bijou_total or ZGTrackerSV.coin_total) and 
+				(ZGTrackerSV.bijou_total > 0 or ZGTrackerSV.coin_total > 0) and
+				timediff > 14400 then
 			local resettime = ZGTrackerSV.reset_cdate .. " - " .. ZGTrackerSV.reset_time
 			local dialog = StaticPopup_Show ("ZGT_RESET_DATA_DIALOG", resettime)
 			if dialog then
@@ -249,6 +249,14 @@ local function ZGT_AddLoot(loottype, looter, class)
 			ZGT_STATUS("Friendly Reminder! Use '/zgt reset' at raid start to wipe Loot-Dataset!")
 		end
 	end
+
+	return loottype, looter, class
+end
+
+local function ZGT_AddLoot(loottype, looter, class)
+	ZGTrackerSV.coin_total = ZGTrackerSV.coin_total or 0
+	ZGTrackerSV.bijou_total = ZGTrackerSV.bijou_total or 0
+	ZGTrackerSV.looter_count = ZGTrackerSV.looter_count or 0
 
 	if ZGTrackerSV and loottype and looter then
 		if loottype == "coin" then
@@ -271,6 +279,7 @@ local function ZGT_AddLoot(loottype, looter, class)
 			ZGTrackerSV.lootTable[looter]["frame"] = ZGTrackerSV.looter_count
 			ZGTrackerSV.lootTable[looter]["class"] = class
 			ZGTrackerSV.lootTable[looter][loottype] = ZGTrackerSV.lootTable[looter][loottype] + 1
+			ZGT_D("data: " .. ZGTrackerSV.looter_count .. " - data2: " .. looter .. " - data3: " .. class)
 			ZGT_GUI_Add(ZGTrackerSV.looter_count, looter, class)
 		end
 		-- summary update
@@ -560,7 +569,8 @@ StaticPopupDialogs["ZGT_RESET_DATA_DIALOG"] = {
 	button2 = "No",
 	OnAccept = function(data, data2, data3)
 		ZGT_ResetData()
-		if data and data2 then
+		if data and data2 and data3 then
+			ZGT_D("data: " .. data .. " - data2: " .. data2 .. " - data3: " .. data3)
 			ZGT_AddLoot(data, data2, data3)
 		end
 	end,
@@ -610,6 +620,7 @@ coreframe:SetScript("OnEvent", function()
 		end
 
 	elseif event == "VARIABLES_LOADED" then
+
 		ZGT_GUI_Init()
 		
 	end

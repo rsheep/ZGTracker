@@ -673,6 +673,8 @@ local function GUI_InfoLine_New(parent, anchorframe, name, offset, tCol)
 		end
 	end)
 
+	frame:Hide()
+
 	return frame
 end
 
@@ -1069,6 +1071,7 @@ function ZGT_GUI_Add(index, name, class)
 		local tCol = {}
 		tCol = {.311, .011, .011} -- RED
 		GUI_Frame.summaryinfo = GUI_InfoLine_New(GUI_Frame, GUI_Frame.tableheader, "Summary", 3, tCol)
+		GUI_Frame.summaryinfo:Show()
 	else
 		local tCol = {}
 		tCol = ClassColor[class][1]
@@ -1094,7 +1097,7 @@ function ZGT_GUI_Add(index, name, class)
 			GUI_Frame.playerinfo[index] = GUI_InfoLine_New(GUI_Frame, anchor_frame, name, 2, tCol)
 		end
 
-		if (ZGTrackerSV.details == "self" or name == UnitName('player')) or ZGTrackerSV.details == "raid" then
+		if (ZGTrackerSV.details == "self" and name == UnitName('player')) or ZGTrackerSV.details == "raid" then
 			GUI_Frame.playerinfo[index]:Show()
 			local height = (ZGT_UI.HEIGHT + 15) + ZGTrackerSV.looter_count * 13
 			GUI_Frame:SetHeight(height)
@@ -1127,6 +1130,18 @@ function ZGT_GUI_Reset()
 	MoneyFrame_Update(getglobal("ZGT_GUI_SmallMoneyFrame"):GetName(), ZGTrackerSV.copper_total)
 
 
+	for k,v in pairs(GUI_Frame.playerinfo) do
+		local frame = v
+		if frame:IsVisible() then
+			frame:Hide()
+			frame:GetParent():SetHeight(frame:GetParent():GetHeight() - 13)
+		end
+		frame.fs_name:SetText("bogus" .. k)
+		frame.fs_bijou:SetText("0")
+		frame.fs_coin:SetText("0")
+	end
+
+	--[[
 	for i = 1, ZGTrackerSV.looter_count do
 		local frame = GUI_Frame.playerinfo[i]
 		if frame then
@@ -1141,6 +1156,7 @@ function ZGT_GUI_Reset()
 			break
 		end
 	end
+	]]
 
 	local looter = UnitName('player')
 	local class = ZGTrackerSV.lootTable[looter]["class"]
