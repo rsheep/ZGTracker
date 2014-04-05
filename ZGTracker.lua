@@ -20,6 +20,8 @@ ZGTrackerSV = {
 	x_anchor = 200,
 	y_anchor = 50,
 	copper_total = 0,
+	reputation_total = 0,
+	display_reputation = true,
 	display_money = true,
 	spam_loot = false,
 	spam_money = false,
@@ -30,7 +32,7 @@ ZGTrackerSV = {
 	},
 }
 
-local ZGT_VERSION = 0.093
+local ZGT_VERSION = 0.095
 local ZGT_DEBUG = false
 
 local ZGT_RESET_CHECK = true
@@ -158,7 +160,9 @@ local function ZGT_ResetData()
 	ZGTrackerSV.copper_total = 0
 	ZGTrackerSV.bijou_total = 0
 	ZGTrackerSV.coin_total = 0
+	ZGTrackerSV.reputation_total = 0
 	ZGTrackerSV.looter_count = 0
+
 	
 	ZGTrackerSV.reset_date = localdate
 	ZGTrackerSV.reset_cdate = localcdate
@@ -490,7 +494,13 @@ local function ZGT_Event_ZONE_CHANGED_NEW_AREA()
 	end
 end
 
-
+local function ZGT_Event_COMBAT_TEXT_UPDATE(actiontype, faction, reputation)
+	if actiontype == "FACTION" and faction == "Zandalar Tribe" then
+		ZGTrackerSV.reputation_total = (ZGTrackerSV.reputation_total or 0) + reputation
+		local frame = getglobal("ZGT_GUI_ReputationFrame")
+		frame.fs_repvalue:SetText(ZGTrackerSV.reputation_total)
+	end
+end
 
 -- 
 -- Addon Main
@@ -583,6 +593,9 @@ StaticPopupDialogs["ZGT_RESET_DATA_DIALOG"] = {
 	preferredIndex = 1,
 }
 
+-- Function to "scan" reputation gains
+--CombatTextSetActiveUnit('player')
+
 -- ZGTracker Control Frame
 local coreframe = CreateFrame("Frame", nil)
 coreframe:RegisterEvent("ADDON_LOADED")
@@ -594,9 +607,14 @@ coreframe:RegisterEvent("START_LOOT_ROLL")
 
 coreframe:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 
+coreframe:RegisterEvent("COMBAT_TEXT_UPDATE")
+
 coreframe:SetScript("OnEvent", function()
 	if event == "CHAT_MSG_MONEY" then
 		ZGT_Event_CHAT_MSG_MONEY(arg1)
+
+	elseif event =="COMBAT_TEXT_UPDATE" then
+		ZGT_Event_COMBAT_TEXT_UPDATE(arg1, arg2, arg3)
 
 	elseif event == "CHAT_MSG_LOOT" then
 		ZGT_Event_CHAT_MSG_LOOT(arg1, arg11)

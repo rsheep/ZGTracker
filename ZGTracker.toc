@@ -1,7 +1,7 @@
 ## Interface: 11200
 ## Title: |cff55CC55ZG|cffffffffTracker
 ## Notes: Tracks Zul'Gurub coins and bijous
-## Version: 0.093
+## Version: 0.095
 ## Author: mrmr
 ## X-Website : http://github.com/rsheep/ZGTracker
 ## X-Category: Raid

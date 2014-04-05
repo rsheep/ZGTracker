@@ -324,10 +324,10 @@ local function GUI_Option(parent)
 	frame:SetFrameStrata("MEDIUM")
 	frame:SetScale(ZGT_UI.SCALE)
 	frame:SetWidth(ZGT_UI.WIDTH)
-	frame:SetHeight(102)
+	frame:SetHeight(116)
 
-	if getglobal("ZGT_GUI").moneyframe:IsVisible() then
-		frame:SetPoint("TOPLEFT", parent.moneyframe, "BOTTOMLEFT", 0, -1)
+	if getglobal("ZGT_GUI").moneyframe:IsVisible() or getglobal("ZGT_GUI").reputationframe:IsVisible()then
+		frame:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -14)
 	else
 		frame:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -1)
 	end
@@ -350,7 +350,7 @@ local function GUI_Option(parent)
 	--
 	local frame_display = CreateFrame("Frame", nil, frame)
 	frame_display:SetWidth(ZGT_UI.WIDTH - 5 * 2)
-	frame_display:SetHeight(26)
+	frame_display:SetHeight(38)
 	frame_display:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, -18)
 	frame_display:SetBackdrop( {
 		bgFile = ZGT_UI.BG_TEXTURE_FILE
@@ -367,8 +367,58 @@ local function GUI_Option(parent)
 
 	frame.fs_display = fs_display
 
+	local fs_display_reputation = frame_display:CreateFontString(nil, "ARTWORK")
+	fs_display_reputation:SetPoint("TOPLEFT", frame_display, "TOPLEFT", 3, -16)
+	fs_display_reputation:SetFont(ZGT_UI.FONT_FILE, 7)
+	fs_display_reputation:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
+	fs_display_reputation:SetText("Display Reputation Frame:")
+
+	frame.fs_display_reputation = fs_display_reputation
+
+	local btn_display_reputation = CreateFrame("Button", nil, frame_display)
+	btn_display_reputation:SetWidth(10)
+	btn_display_reputation:SetHeight(10)
+	btn_display_reputation:SetPoint("TOPLEFT", frame_display, "TOPRIGHT", -14, -14)
+	btn_display_reputation:RegisterForClicks("LeftButtonDown")
+
+	if ZGTrackerSV.display_reputation == true then
+		btn_display_reputation:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
+		btn_display_reputation:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
+		btn_display_reputation:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")
+	else
+		btn_display_reputation:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
+		btn_display_reputation:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
+		btn_display_reputation:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
+	end
+
+	btn_display_reputation:SetScript("OnClick", function()
+		if arg1 == "LeftButton" then
+			local frame = getglobal("ZGT_GUI")
+			if ZGTrackerSV.display_reputation == true then
+				ZGTrackerSV.display_reputation = false
+				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Normal")
+				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
+				frame.reputationframe:Hide()
+			else
+				ZGTrackerSV.display_reputation = true
+				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
+				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
+				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")
+				frame.reputationframe:Show()
+			end
+			if frame.moneyframe:IsVisible() or frame.reputationframe:IsVisible()then
+				frame.optionframe:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -14)
+			else
+				frame.optionframe:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -1)
+			end
+		end
+	end)
+
+	frame.btn_display_reputation = btn_display_reputation
+
 	local fs_display_money = frame_display:CreateFontString(nil, "ARTWORK")
-	fs_display_money:SetPoint("TOPLEFT", frame_display, "TOPLEFT", 3, -16)
+	fs_display_money:SetPoint("TOPLEFT", frame_display, "TOPLEFT", 3, -28)
 	fs_display_money:SetFont(ZGT_UI.FONT_FILE, 7)
 	fs_display_money:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
 	fs_display_money:SetText("Display Money Frame:")
@@ -378,7 +428,7 @@ local function GUI_Option(parent)
 	local btn_display_money = CreateFrame("Button", nil, frame_display)
 	btn_display_money:SetWidth(10)
 	btn_display_money:SetHeight(10)
-	btn_display_money:SetPoint("TOPLEFT", frame_display, "TOPRIGHT", -14, -14)
+	btn_display_money:SetPoint("TOPLEFT", frame_display, "TOPRIGHT", -14, -26)
 	btn_display_money:RegisterForClicks("LeftButtonDown")
 
 	if ZGTrackerSV.display_money == true then
@@ -400,14 +450,17 @@ local function GUI_Option(parent)
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Off-Pushed")
 				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Blue-Highlight")
 				frame.moneyframe:Hide()
-				frame.optionframe:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -1)
 			else
 				ZGTrackerSV.display_money = true
 				this:SetNormalTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Normal")
 				this:SetPushedTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-On-Pushed")
 				this:SetHighlightTexture("Interface\\AddOns\\ZGTracker\\Textures\\Buttons\\Button-Red-Highlight")
 				frame.moneyframe:Show()
-				frame.optionframe:SetPoint("TOPLEFT", frame.moneyframe, "BOTTOMLEFT", 0, -1)
+			end
+			if frame.moneyframe:IsVisible() or frame.reputationframe:IsVisible()then
+				frame.optionframe:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -14)
+			else
+				frame.optionframe:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -1)
 			end
 		end
 	end)
@@ -721,15 +774,76 @@ local function GUI_TableHeaders(parent)
 	return frame
 end
 
+local function GUI_Reputation(parent)
+	local frame = CreateFrame("Frame", "ZGT_GUI_ReputationFrame", parent)
+	frame:EnableMouse(true)
+	frame:SetClampedToScreen(true)
+	frame:SetFrameStrata("MEDIUM")
+	frame:SetScale(ZGT_UI.SCALE)
+	frame:SetWidth(ZGT_UI.WIDTH/2 - 6)
+	frame:SetHeight(12)
+	frame:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -1)
+
+	frame:SetBackdrop( {
+		bgFile = ZGT_UI.BG_TEXTURE_FILE
+	});
+	frame:SetBackdropColor(.01, .01, .01, ZGT_UI.BGALPHA)
+
+	local fs_rep = frame:CreateFontString(nil, "ARTWORK")
+	fs_rep:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -1)
+	fs_rep:SetFont(ZGT_UI.FONT_FILE, 8)
+	fs_rep:SetTextColor(.91, .31, .31, ZGT_UI.BGALPHA)
+	fs_rep:SetText("Rep:")
+
+	frame.fs_rep = fs_rep
+
+	local fs_repvalue = frame:CreateFontString(nil, "ARTWORK")
+	fs_repvalue:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -6, -1)
+	fs_repvalue:SetFont(ZGT_UI.FONT_FILE, 8)
+	fs_repvalue:SetTextColor(1, 1, 1, ZGT_UI.BGALPHA)
+	fs_repvalue:SetText(ZGTrackerSV.reputation_total)
+
+	frame.fs_repvalue = fs_repvalue
+
+	frame:SetScript("OnMouseDown", function()
+		local channel = nil
+		local announce = false
+		if arg1 == "LeftButton" and IsAltKeyDown() then
+			channel = "SAY"
+			announce = true
+		elseif arg1 == "RightButton" and IsAltKeyDown() then
+			channel = "RAID"
+			announce = true
+		end
+		if announce then
+			local date = ZGTrackerSV.reset_cdate .. " - " .. ZGTrackerSV.reset_time
+			local reputation = ZGTrackerSV.reputation_total
+			
+			local str = string.format("[ZGTracker]   dataset [%s]", date)
+			SendChatMessage(str, channel)
+			local str = string.format("  Zandalar Tribe reputation earned: %s", reputation)
+			SendChatMessage(str, channel)
+		end
+	end)
+
+	if ZGTrackerSV.display_reputation then
+		frame:Show()
+	else
+		frame:Hide()
+	end
+
+	return frame
+end
+
 local function GUI_Money(parent)
 	local frame = CreateFrame("Frame", "ZGT_GUI_MoneyFrame", parent)
 	frame:EnableMouse(true)
 	frame:SetClampedToScreen(true)
 	frame:SetFrameStrata("MEDIUM")
 	frame:SetScale(ZGT_UI.SCALE)
-	frame:SetWidth(ZGT_UI.WIDTH)
+	frame:SetWidth(ZGT_UI.WIDTH/2 + 5)
 	frame:SetHeight(12)
-	frame:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -1)
+	frame:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, -1)
 
 	frame:SetBackdrop( {
 		bgFile = ZGT_UI.BG_TEXTURE_FILE
@@ -1127,6 +1241,9 @@ function ZGT_GUI_Reset()
 	frame.fs_bijou:SetText("0")
 	frame.fs_coin:SetText("0")
 
+	local frame = GUI_Frame.reputationframe
+	frame.fs_repvalue:SetText("0")
+
 	MoneyFrame_Update(getglobal("ZGT_GUI_SmallMoneyFrame"):GetName(), ZGTrackerSV.copper_total)
 
 
@@ -1140,23 +1257,6 @@ function ZGT_GUI_Reset()
 		frame.fs_bijou:SetText("0")
 		frame.fs_coin:SetText("0")
 	end
-
-	--[[
-	for i = 1, ZGTrackerSV.looter_count do
-		local frame = GUI_Frame.playerinfo[i]
-		if frame then
-			if frame:IsVisible() then
-				frame:Hide()
-				frame:GetParent():SetHeight(frame:GetParent():GetHeight() - 13)
-			end
-			frame.fs_name:SetText("bogus" .. i)
-			frame.fs_bijou:SetText("0")
-			frame.fs_coin:SetText("0")
-		else
-			break
-		end
-	end
-	]]
 
 	local looter = UnitName('player')
 	local class = ZGTrackerSV.lootTable[looter]["class"]
@@ -1174,6 +1274,8 @@ function ZGT_GUI_Init()
 	end
 
 	GUI_Frame =	GUI_Header()
+
+	GUI_Frame.reputationframe = GUI_Reputation(GUI_Frame)
 
 	GUI_Frame.moneyframe = GUI_Money(GUI_Frame)
 	MoneyFrame_Update(GUI_Frame.moneyframe.smallmoneyframe:GetName(), ZGTrackerSV.copper_total)

@@ -248,9 +248,12 @@ function ZGTFu:Toggle_Money_Frame()
 end
 
 function ZGTFu:OnDataUpdate()
+	self.reset_time = ZGTrackerSV.reset_time
+	self.reset_cdate = ZGTrackerSV.reset_cdate
     self.coin_total = ZGTrackerSV.coin_total
 	self.bijou_total = ZGTrackerSV.bijou_total
 	self.copper_total = ZGTrackerSV.copper_total
+	self.reputation_total = ZGTrackerSV.reputation_total
 	self.lootTable = ZGTrackerSV.lootTable
 	self.reset_cdate = ZGTrackerSV.reset_cdate
 	self.reset_time = ZGTrackerSV.reset_time
@@ -292,33 +295,69 @@ function ZGTFu:OnTextUpdate()
 end
 
 function ZGTFu:OnTooltipUpdate()
+	self:UpdateData()
+
 	local playername = UnitName('player')
 	local gold = math.floor(self.copper_total / 10000)
 	local silver = math.floor((self.copper_total - (gold * 10000)) / 100)
 	local copper = self.copper_total - (gold * 10000) - (silver * 100)
-	local moneystring = "|Cffffffff" .. tostring(gold) .. " |Cffeeee33G " .. 
-						"|Cffffffff" .. tostring(silver) .. " |CffbbbbbbS " .. 
-						"|Cffffffff" .. tostring(copper) .. " |Cffc79c6eC"
+	local moneystring = nil
+	if gold > 0 then
+		moneystring = "|Cffffffff" .. tostring(gold) .. " |Cffeeee33G " .. 
+					"|Cffffffff" .. tostring(silver) .. " |CffbbbbbbS " .. 
+					"|Cffffffff" .. tostring(copper) .. " |Cffc79c6eC"
+	elseif gold == 0 and silver > 0 then
+		moneystring = "|Cffffffff" .. tostring(silver) .. " |CffbbbbbbS " .. 
+					"|Cffffffff" .. tostring(copper) .. " |Cffc79c6eC"
+	else
+		moneystring = "|Cffffffff" .. tostring(copper) .. " |Cffc79c6eC"
+	end
 
-	tablet:SetHint("\n\n  |cffffffffClick|r:" ..
+
+	tablet:SetHint("\n\n  |cffffffffLeftClick|r:" ..
 				"\n Toggle ZGTracker Frame." ..
-				"\n\n  |cffffffffDoubleClick|r:" ..
+				"\n\n  |cffffffffAlt + LeftClick|r:" ..
 				"\n RaidAnnounce Bijous/Coins." ..
-				"\n\n  |cffffffffAlt+DoubleClick|r:" ..
-				"\n RaidAnnounce Money.")
+				"\n\n  |cffffffffAlt + Ctrl + LeftClick|r:" ..
+				"\n RaidAnnounce Money and Reputation.")
     -- as a rule, if you have an OnClick or OnDoubleClick or OnMouseUp or 
-    -- OnMouseDown, you should set a hint. 
-	local cat = tablet:AddCategory(
-        "text", "", --"Bijous&Coins",
-        "child_size", 8,
-        "child_size2", 8,
-        "child_size3", 8,
+    -- OnMouseDown, you should set a hint.
+    local cat = tablet:AddCategory(
+        --"text", "|cffaabb00DataSet|r:   " .. self.reset_cdate .. " - " .. self.reset_time,
+        "text", "DataSet:",
+        "textR", .71,
+        "textG", .31,
+        "textB", .31,
+        "child_size", 9,
+        "child_size2", 9,
+        "child_size3", 9,
         "columns", 3,
-        "text2", "Bijous",
+        "text2", self.reset_cdate,
+        "size2", 10,
+        "text2R", 1,
+        "text2G", 1,
+        "text2B", 1,
+        "text3", self.reset_time,
+        "size3", 10,
+        "text3R", 1,
+        "text3G", 1,
+        "text3B", 1
+    )
+	cat:AddLine(
+    	"text", " ",
+    	"textR", 1,
+    	"textG", 1,
+    	"textB", 0
+    )
+	cat:AddLine(
+        "text", "", --"Bijous&Coins",
+    	"text2", "Bijous",
+    	"size2", 12,
         "text2R", 1,
         "text2G", 1,
         "text2B", 0,
         "text3", "Coins",
+        "size3", 12,
         "text3R", 1,
         "text3G", 1,
         "text3B", 0
@@ -337,12 +376,6 @@ function ZGTFu:OnTooltipUpdate()
     	"text3R", 1,
     	"text3G", 1,
     	"text3B", 1
-    )
-    cat:AddLine(
-    	"text", " ",
-    	"textR", 1,
-    	"textG", 1,
-    	"textB", 0
     )
     cat:AddLine(
     	"text", ClassTextColor[self.lootTable[playername]["class"]] .. playername .. "|cffffffff: ",
@@ -382,44 +415,69 @@ function ZGTFu:OnTooltipUpdate()
     	"textG", 1,
     	"textB", 0
     )
+
+    local cat = tablet:AddCategory(
+        "text", "", --"Bijous&Coins",
+        "child_size", 10,
+        "child_size2", 10,
+        "columns", 2
+    ) 
     cat:AddLine(
-    	"text", "Money: ",
+    	--"text", "Reputation:  |cffffffff" .. tostring(self.reputation_total),
+    	"text", "Reputation:",
+    	"size", 12,
+    	"textR", .71,
+    	"textG", .31,
+    	"textB", .31,
+    	"text2", tostring(self.reputation_total),
+    	"size2", 10,
+   		"text2R", 1,
+    	"text2G", 1,
+    	"text2B", 1
+    )
+    cat:AddLine(
+    	"text", "Money:",
     	"size", 12,
     	"textR", .71,
     	"textG", .31,
     	"textB", .31,
     	"text2", moneystring,
-    	"size2", 8,
+    	"size2", 10,
    		"text2R", 1,
     	"text2G", 1,
     	"text2B", 1
     )
 end
 
-function ZGTFu:OnClick()
-    local frame = getglobal("ZGT_GUI")
-    if frame:IsVisible() then
-        frame:Hide()
-	else
-        frame:Show()
-    end
-end
-
-function ZGTFu:OnDoubleClick()
+function ZGTFu:OnClick(button)
     local date = self.reset_cdate .. " - " .. self.reset_time
-	local gold = math.floor(self.copper_total / 10000)
-	local silver = math.floor((self.copper_total - (gold * 10000)) / 100)
-	local copper = self.copper_total - (gold * 10000) - (silver * 100)
-
 	local channel = "RAID"
 
-	local str = string.format("[ZGTracker]   dataset [%s]", date)
-	SendChatMessage(str, channel)
-	if not IsAltKeyDown() then
-		local str = string.format("  %s  Bijous: [%3s]   Coins: [%3s]", "Summary", self.bijou_total, self.coin_total)
+	if button == "LeftButton" and IsAltKeyDown() and IsControlKeyDown() then
+		local gold = math.floor(self.copper_total / 10000)
+		local silver = math.floor((self.copper_total - (gold * 10000)) / 100)
+		local copper = self.copper_total - (gold * 10000) - (silver * 100)
+
+		local str = string.format("[ZGTracker]   dataset [%s]", date)
 		SendChatMessage(str, channel)
-	else
+		local str = string.format("  Zandalar Tribe reputation earned: %s", self.reputation_total)
+		SendChatMessage(str, channel)
 		local str = string.format("  %s golds, %s silver, %s copper   Looted", gold, silver, copper)
 		SendChatMessage(str, channel)
+	elseif button == "LeftButton" and IsAltKeyDown() then
+		local str = string.format("[ZGTracker]   dataset [%s]", date)
+		SendChatMessage(str, channel)
+		local str = string.format("  %s  Bijous: [%3s]   Coins: [%3s]", "Summary", self.bijou_total, self.coin_total)
+		SendChatMessage(str, channel)
+	elseif button == "LeftButton" then
+		local frame = getglobal("ZGT_GUI")
+	    if frame:IsVisible() then
+	        frame:Hide()
+		else
+	        frame:Show()
+	    end
 	end
+end
+
+function ZGTFu:OnDoubleClick(button)
 end
