@@ -1,15 +1,24 @@
 ZGTracker
 =========
-**ZGTracker** is a "World of Warcraft Addon" to tracks Zul'Gurub coins and bijous lootage.
+**ZGTracker** is a "World of Warcraft Addon" to tracks Zul'Gurub Bijous and Coins lootage.
 
-The Addon also provides Roll-Automation. 
+Features:
 
-You will also be able to auto Need/Greed/Pass on bijous and coins.
+   - Raid Announcements for Bijous/Coins, Zandalar reputation and Money.
+   - InfoLines colored-by-class.
+   - Roll-Automation (Auto Need/Greed/Pass on bijous and coins).
+   - Roll-Spam filtering (you can even suppress the AutoRoll message now!).
+   - Looted Money tracking.
+   - Money-Spam filtering.
+   - Zandalar reputation tracking.
+   - Fubar2 Support.
+
+Hope you will enjoy it!
 
 > **NOTE:**
 >
-> - The Addon is developed for WoW 1.12.1 (toc 11200), also known as Vanilla WoW 
-
+> - This Addon is developed for WoW 1.12.1 (toc 11200), also known as Vanilla WoW 
+>
 
 Usage
 -----
